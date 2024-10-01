@@ -334,7 +334,7 @@ const InvoiceForm = ({ onSubmit }) => {
           </Grid>
 
           <Grid item xs={12}>
-            <Grid container spacing={2} pt={2}>
+            <Grid container spacing={0} pt={2}>
               <Grid item xs={2}>
                 <Typography variant="h6">Product Items</Typography>
               </Grid>
@@ -343,6 +343,7 @@ const InvoiceForm = ({ onSubmit }) => {
                   onClick={handleAddItem}
                   variant="contained"
                   color="primary"
+                  // sx={{padding:'6px'}}
                 >
                   Add Item
                 </Button>
@@ -507,6 +508,8 @@ const InvoiceForm = ({ onSubmit }) => {
                     variant="outlined"
                     color="secondary"
                     onClick={() => handleRemoveItem(index)}
+                    sx={{ fontWeight: "bold" }}
+                    disabled={items.length === 1}
                   >
                     Remove
                   </Button>

@@ -14,7 +14,7 @@ const createWindow = () => {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    icon: path.join(__dirname, "../dist/icon.png"),
+    icon: path.join(__dirname, "../dist/Firecrackers.png"),
   });
 
   const isDev = !app.isPackaged;
