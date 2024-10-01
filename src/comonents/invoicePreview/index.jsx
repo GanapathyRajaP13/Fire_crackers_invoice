@@ -300,26 +300,24 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
 
               <Grid item xs={3}>
                 <Grid container spacing={1}>
-                  {/* Estimate Date */}
                   <Grid item xs={6}>
                     <Typography>
-                      <strong>Estimate Date:</strong>
+                      <strong>Estimate Date</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <Typography>
-                      {moment(clientDetails?.date).format("DD/MM/YYYY")}
+                      :{moment(clientDetails?.date).format("DD/MM/YYYY")}
                     </Typography>
                   </Grid>
 
-                  {/* Estimate No */}
                   <Grid item xs={6}>
                     <Typography>
-                      <strong>Estimate No:</strong>
+                      <strong>Estimate No</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography>{clientDetails?.estimateNo}</Typography>
+                    <Typography>:{clientDetails?.estimateNo}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -588,7 +586,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
           </Typography>
         </Box>
 
-        {/* Final Note and Email */}
         <Typography mt={2}>
           <span style={{ color: "red" }}>*</span> This Symbol Notifies
           Non-Discount (Net-Rate) Items.
@@ -597,7 +594,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
           <Grid container>
             <Grid item xs={8}>
               <Grid container spacing={1}>
-                {/* Client Name */}
                 <Grid item xs={6}>
                   <Typography>
                     <strong>Total No.Of Discount Items</strong>
@@ -614,7 +610,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   </Typography>
                 </Grid>
 
-                {/* Address 1 */}
                 <Grid item xs={6}>
                   <Typography>
                     <strong>Total No.Of Non- Discount [Net-Rate] Items</strong>
