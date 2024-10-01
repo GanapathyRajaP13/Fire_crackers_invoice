@@ -174,7 +174,7 @@ const InvoiceForm = ({ onSubmit }) => {
               Client Name {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="Client Name"
+              placeholder="enter name"
               value={clientName}
               onChange={handleClientNameChange}
               error={!!errors.clientName}
@@ -216,7 +216,7 @@ const InvoiceForm = ({ onSubmit }) => {
               City {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="City"
+              placeholder="enter city"
               value={city}
               onChange={handleCityChange}
               error={!!errors.city}
@@ -237,7 +237,7 @@ const InvoiceForm = ({ onSubmit }) => {
               Mobile No {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="Mobile No"
+              placeholder="enter mobile"
               type="number"
               value={mobileNo}
               onChange={handleMobileNoChange}
@@ -296,7 +296,7 @@ const InvoiceForm = ({ onSubmit }) => {
               Estimate No {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="Estimate No"
+              placeholder="enter estimate no"
               value={estimateNo}
               onChange={handleEstimateNoChange}
               error={!!errors.estimateNo}
