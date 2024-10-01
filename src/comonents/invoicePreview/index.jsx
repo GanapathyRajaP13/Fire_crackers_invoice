@@ -29,6 +29,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const { productDetails, discount } = invoiceData;
     const totalBeforeDiscount = productDetails.reduce((total, product) => {
       const itemTotal = product.rate * product.quantity;
@@ -38,18 +39,17 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
     const discountAmount = (totalBeforeDiscount * discount) / 100;
 
     const finalTotal = totalBeforeDiscount - discountAmount;
-    setDiscountedRate(Math.floor(finalTotal));
+    setDiscountedRate(Number(Math.floor(finalTotal)).toFixed(2));
     setTotal(totalBeforeDiscount);
   }, [invoiceData]);
 
   const handleDownloadPDF = () => {
     const input = componentRef.current;
-    html2canvas(input, { scale: 2 }).then((canvas) => {
+    html2canvas(input, { scale: 3 }).then((canvas) => {
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const imgData = canvas.toDataURL("image/png");
+      const pdfHeight = pdf.internal.pageSize.getHeight() + 20;
+      const imgData = canvas.toDataURL("image/jpeg", 2);
       const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -57,42 +57,28 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       let position = 0;
 
       const topMargin = 20;
-      const tableHeaderHeight = 10;
       let pageNumber = 1;
-
-      const drawHeader = () => {
-        pdf.setFontSize(12);
-        pdf.setFont("bold");
-        pdf.text("S.No", 10, 20);
-        pdf.text("Product Name", 30, 20);
-        pdf.text("Quantity", 100, 20);
-        pdf.text("Rate", 130, 20);
-        pdf.text("Amount", 160, 20);
-      };
 
       const addFooter = () => {
         pdf.setFontSize(10);
         pdf.setTextColor(150);
-        pdf.text(`Page ${pageNumber}`, pdfWidth - 20, pdfHeight - 10);
+        pdf.text(`Page ${pageNumber}`, pdfWidth - 20, pdfHeight - 30);
         pageNumber += 1;
       };
-
-      drawHeader();
       addFooter();
 
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
       heightLeft -= pdfHeight;
 
       while (heightLeft > 0) {
         position = heightLeft - imgHeight + topMargin;
         pdf.addPage();
-        drawHeader();
         addFooter();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
         heightLeft -= pdfHeight;
       }
 
-      pdf.save("estimate.pdf");
+      pdf.save(`${clientDetails?.name}.pdf`);
     });
   };
 
@@ -157,7 +143,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
     return words.trim();
   };
 
-  const numberInWords = numberToWords(Math.round(discountedRate));
+  const numberInWords = `${numberToWords(discountedRate)} only`;
 
   return (
     <Box p={4}>
@@ -276,23 +262,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     <Typography>:{clientDetails?.name}</Typography>
                   </Grid>
 
-                  <Grid item xs={3}>
+                  {/* <Grid item xs={3}>
                     <Typography>
                       <strong>Address 1</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={9}>
                     <Typography>:{clientDetails?.address1}</Typography>
-                  </Grid>
-
-                  <Grid item xs={3}>
-                    <Typography>
-                      <strong>Address 2</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography>:{clientDetails?.address2}</Typography>
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={3}>
                     <Typography>
@@ -350,26 +327,86 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
           </Box>
         </Box>
 
-        {/* Product Table */}
-        <TableContainer component={Paper}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            border: "1px solid #000",
+          }}
+        >
           <Table>
             <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
-              <TableRow sx={{ fontWeight: "bold" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>S.No</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Product Name</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Rate</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Amount</TableCell>
+              <TableRow>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    border: "1px solid #000",
+                  }}
+                >
+                  S.No
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    border: "1px solid #000",
+                  }}
+                >
+                  Product Name
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    border: "1px solid #000",
+                  }}
+                >
+                  Quantity
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    border: "1px solid #000",
+                  }}
+                >
+                  Rate
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    border: "1px solid #000",
+                  }}
+                >
+                  Amount
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {productDetails?.map((product, index) => (
                 <TableRow key={product.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
-                  <TableCell>{product.rate.toFixed(2)}</TableCell>
-                  <TableCell>
+                  <TableCell
+                    sx={{ border: "1px solid #000", textAlign: "center" }}
+                  >
+                    {index + 1}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #000" }}>
+                    {product.name}
+                  </TableCell>
+                  <TableCell
+                    sx={{ border: "1px solid #000", textAlign: "right" }}
+                  >
+                    {product.quantity}
+                  </TableCell>
+                  <TableCell
+                    sx={{ border: "1px solid #000", textAlign: "right" }}
+                  >
+                    {product.rate.toFixed(2)}
+                  </TableCell>
+                  <TableCell
+                    sx={{ border: "1px solid #000", textAlign: "right" }}
+                  >
                     {getAmount(product.quantity, product.rate)}
                   </TableCell>
                 </TableRow>
@@ -413,7 +450,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         }}
                       ></TableCell>
                       <TableCell align="right" sx={{ borderBottom: "none" }}>
-                        <strong>{total.toFixed(2)}</strong>
+                        <strong>₹{total.toFixed(2)}</strong>
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -424,7 +461,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderLeft: "1px solid #000",
                         }}
                       >
-                        <strong>Discount:</strong>
+                        <strong>Discount %</strong>
                       </TableCell>
                       <TableCell
                         sx={{
@@ -432,10 +469,10 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderBottom: "none",
                         }}
                       >
-                        <strong>{discount}%</strong>
+                        <strong>{Number(discount).toFixed(2)}</strong>
                       </TableCell>
                       <TableCell align="right" sx={{ borderBottom: "none" }}>
-                        {discountedRate}
+                        ₹{discountedRate}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -446,7 +483,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderLeft: "1px solid #000",
                         }}
                       >
-                        <strong>Sub-Total:</strong>
+                        <strong>Sub-Total</strong>
                       </TableCell>
                       <TableCell
                         sx={{
@@ -461,7 +498,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderBottom: "1px solid #000",
                         }}
                       >
-                        <strong>{discountedRate}</strong>
+                        <strong>₹{discountedRate}</strong>
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -530,7 +567,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderBottom: "none",
                         }}
                       >
-                        <strong>{discountedRate}</strong>
+                        <strong>₹{discountedRate}</strong>
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -566,14 +603,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     <strong>Total No.Of Discount Items</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={2}>
-                  <Typography>
+                <Grid item xs={1}>
+                  <Typography pl={2}>
                     <strong>{productDetails.length}</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={4}>
-                  <Typography>
-                    <strong>{total}</strong>
+                <Grid item xs={1}>
+                  <Typography sx={{ textAlign: "right" }}>
+                    <strong>{Number(total).toFixed(2)}</strong>
                   </Typography>
                 </Grid>
 
@@ -583,17 +620,17 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     <strong>Total No.Of Non- Discount [Net-Rate] Items</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={2}>
-                  <Typography sx={{ borderBottom: "1px solid #000" }}>
+                <Grid item xs={1}>
+                  <Typography pl={2} sx={{ borderBottom: "1px solid #000" }}>
                     <strong>0</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={4} sx={{ paddingLeft: "0 !important" }}>
+                <Grid item xs={1} sx={{ paddingLeft: "0 !important" }}>
                   <Typography
+                    pl={2}
                     sx={{
                       borderBottom: "1px solid #000",
-                      width: "30px",
-                      paddingLeft: 0,
+                      width: "80px",
                       textAlign: "center",
                     }}
                   >
@@ -605,14 +642,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     <strong>Total Items And Value</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={2}>
-                  <Typography>
+                <Grid item xs={1}>
+                  <Typography pl={2}>
                     <strong>{productDetails.length}</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={4}>
-                  <Typography>
-                    <strong>{total}</strong>
+                <Grid item xs={1}>
+                  <Typography sx={{ textAlign: "right" }}>
+                    <strong>{Number(total).toFixed(2)}</strong>
                   </Typography>
                 </Grid>
               </Grid>

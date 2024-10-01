@@ -8,16 +8,18 @@ import {
   Autocomplete,
   InputLabel,
   Box,
+  Paper,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
 import { CrackersPriceList } from "../../crackersPriceList";
+import { inputFieldStyle } from "./style";
+import background from "../../../public/Crackers.png";
 
 const InvoiceForm = ({ onSubmit }) => {
   const [clientName, setClientName] = useState("");
-  const [address1, setAddress1] = useState("");
-  const [address2, setAddress2] = useState("");
+  // const [address1, setAddress1] = useState("");
   const [city, setCity] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [estimateDate, setEstimateDate] = useState(null);
@@ -30,8 +32,7 @@ const InvoiceForm = ({ onSubmit }) => {
     const newErrors = {};
 
     if (!clientName) newErrors.clientName = "Client Name is required";
-    if (!address1) newErrors.address1 = "Address 1 is required";
-    if (!address2) newErrors.address2 = "Address 2 is required";
+    // if (!address1) newErrors.address1 = "Address 1 is required";
     if (!city) newErrors.city = "City is required";
     if (!mobileNo.match(/^\d{10}$/))
       newErrors.mobileNo = "Mobile number must be 10 digits";
@@ -60,7 +61,9 @@ const InvoiceForm = ({ onSubmit }) => {
     if (!validateForm()) return;
 
     const productDetails = items.map((item) => {
-      const cracker = CrackersPriceList.find((c) => c.id === item.selectedCracker);
+      const cracker = CrackersPriceList.find(
+        (c) => c.id === item.selectedCracker
+      );
       return {
         id: cracker.id,
         name: cracker.name,
@@ -72,8 +75,7 @@ const InvoiceForm = ({ onSubmit }) => {
     const formattedData = {
       clientDetails: {
         name: clientName,
-        address1,
-        address2,
+        // address1,
         city,
         mobile: mobileNo,
         estimateNo,
@@ -109,15 +111,10 @@ const InvoiceForm = ({ onSubmit }) => {
     setErrors((prev) => ({ ...prev, clientName: "" }));
   };
 
-  const handleAddress1Change = (e) => {
-    setAddress1(e.target.value);
-    setErrors((prev) => ({ ...prev, address1: "" }));
-  };
-
-  const handleAddress2Change = (e) => {
-    setAddress2(e.target.value);
-    setErrors((prev) => ({ ...prev, address2: "" }));
-  };
+  // const handleAddress1Change = (e) => {
+  //   setAddress1(e.target.value);
+  //   setErrors((prev) => ({ ...prev, address1: "" }));
+  // };
 
   const handleCityChange = (e) => {
     setCity(e.target.value);
@@ -126,7 +123,11 @@ const InvoiceForm = ({ onSubmit }) => {
 
   const handleMobileNoChange = (e) => {
     setMobileNo(e.target.value);
-    setErrors((prev) => ({ ...prev, mobileNo: "" }));
+    setErrors((prev) => ({
+      ...prev,
+      mobileNo:
+        e.target.value.length <= 10 ? "" : "Mobile number must be 10 digits",
+    }));
   };
 
   const handleEstimateNoChange = (e) => {
@@ -139,8 +140,28 @@ const InvoiceForm = ({ onSubmit }) => {
   };
 
   return (
-    <Container sx={{ mt: 2, border: "1px solid #000" }}>
-      <Box sx={{ padding: "20px", backgroundColor: "#adb4b9", mb: 2, mt: 2 }}>
+    <Container
+      sx={{
+        my: 6,
+        borderRadius: "8px",
+        bgcolor: "#eee",
+        p: 2,
+        boxShadow: "10px 10px 5px #cfcfcf",
+      }}
+    >
+      <Box
+        sx={{
+          padding: "20px",
+          backgroundColor: "#adb4b9",
+          mb: 2,
+          mt: 2,
+          backgroundImage: `url(${background})`,
+          // backgroundSize: "cover",
+          backgroundPosition: "right",
+          backgroundRepeat: "no-repeat",
+          borderRadius: "4px",
+        }}
+      >
         <Typography variant="h4" sx={{ textAlign: "center" }}>
           Sivakasi Crackers Invoice Form
         </Typography>
@@ -149,68 +170,103 @@ const InvoiceForm = ({ onSubmit }) => {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <InputLabel>Client Name</InputLabel>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              Client Name {<span>*</span>}
+            </InputLabel>
             <TextField
               placeholder="Client Name"
               value={clientName}
               onChange={handleClientNameChange}
               error={!!errors.clientName}
-              helperText={errors.clientName}
               fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+              }}
             />
+            {errors.clientName && (
+              <Typography color="error" sx={{ fontSize: "12px" }}>
+                {errors.clientName}
+              </Typography>
+            )}
           </Grid>
 
-          <Grid item xs={4}>
-            <InputLabel>Address 1</InputLabel>
+          {/* <Grid item xs={4}>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              Address {<span>*</span>}
+            </InputLabel>
             <TextField
-              placeholder="Address 1"
+              placeholder="Address"
               value={address1}
               onChange={handleAddress1Change}
               error={!!errors.address1}
-              helperText={errors.address1}
               fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+              }}
             />
-          </Grid>
+            {errors.address1 && (
+              <Typography color="error" sx={{ fontSize: "12px" }}>
+                {errors.address1}
+              </Typography>
+            )}
+          </Grid> */}
 
           <Grid item xs={4}>
-            <InputLabel>Address 2</InputLabel>
-            <TextField
-              placeholder="Address 2"
-              value={address2}
-              onChange={handleAddress2Change}
-              error={!!errors.address2}
-              helperText={errors.address2}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={4}>
-            <InputLabel>City</InputLabel>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              City {<span>*</span>}
+            </InputLabel>
             <TextField
               placeholder="City"
               value={city}
               onChange={handleCityChange}
               error={!!errors.city}
-              helperText={errors.city}
               fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+              }}
             />
+            {errors.city && (
+              <Typography color="error" sx={{ fontSize: "12px" }}>
+                {errors.city}
+              </Typography>
+            )}
           </Grid>
 
           <Grid item xs={4}>
-            <InputLabel>Mobile No</InputLabel>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              Mobile No {<span>*</span>}
+            </InputLabel>
             <TextField
               placeholder="Mobile No"
+              type="number"
               value={mobileNo}
               onChange={handleMobileNoChange}
               error={!!errors.mobileNo}
-              helperText={errors.mobileNo}
               fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+                '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                  {
+                    "-webkit-appearance": "none",
+                    margin: 0,
+                  },
+              }}
             />
+            {errors.mobileNo && (
+              <Typography color="error" sx={{ fontSize: "12px" }}>
+                {errors.mobileNo}
+              </Typography>
+            )}
           </Grid>
 
           <Grid item xs={4}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <InputLabel htmlFor="estimate-date">Estimate Date</InputLabel>
+              <InputLabel
+                htmlFor="estimate-date"
+                sx={{ ...inputFieldStyle.labelStyle }}
+              >
+                Estimate Date {<span>*</span>}
+              </InputLabel>
               <DatePicker
                 id="estimate-date"
                 value={estimateDate}
@@ -224,6 +280,7 @@ const InvoiceForm = ({ onSubmit }) => {
                 error={!!errors.estimateDate}
                 sx={{
                   width: "100%",
+                  ...inputFieldStyle.textFieldSx,
                 }}
               />
               {errors.estimateDate && (
@@ -235,25 +292,44 @@ const InvoiceForm = ({ onSubmit }) => {
           </Grid>
 
           <Grid item xs={4}>
-            <InputLabel>Estimate No</InputLabel>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              Estimate No {<span>*</span>}
+            </InputLabel>
             <TextField
               placeholder="Estimate No"
               value={estimateNo}
               onChange={handleEstimateNoChange}
               error={!!errors.estimateNo}
-              helperText={errors.estimateNo}
               fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+              }}
             />
+            {errors.estimateNo && (
+              <Typography color="error" sx={{ fontSize: "12px" }}>
+                {errors.estimateNo}
+              </Typography>
+            )}
           </Grid>
 
           <Grid item xs={4}>
-            <InputLabel>Discount (%)</InputLabel>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              Discount (%)
+            </InputLabel>
             <TextField
-              placeholder="Discount"
+              placeholder="enter discount"
               type="number"
               value={discount}
               onChange={handleDiscountChange}
               fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+                '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                  {
+                    "-webkit-appearance": "none",
+                    margin: 0,
+                  },
+              }}
             />
           </Grid>
 
@@ -279,19 +355,11 @@ const InvoiceForm = ({ onSubmit }) => {
                   <Autocomplete
                     options={CrackersPriceList}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Cracker"
-                        variant="outlined"
-                        error={!!errors[`items.${index}.selectedCracker`]}
-                        helperText={errors[`items.${index}.selectedCracker`]}
-                      />
-                    )}
                     value={
                       item.selectedCracker
-                        ? CrackersPriceList.find((c) => c.id === item.selectedCracker) ||
-                          null
+                        ? CrackersPriceList.find(
+                            (c) => c.id === item.selectedCracker
+                          ) || null
                         : null
                     }
                     onChange={(event, newValue) => {
@@ -301,11 +369,78 @@ const InvoiceForm = ({ onSubmit }) => {
                         newValue ? newValue.id : ""
                       );
                     }}
+                    renderInput={(params) => (
+                      <>
+                        <TextField
+                          {...params}
+                          placeholder="Select Cracker"
+                          variant="outlined"
+                          error={!!errors[`items.${index}.selectedCracker`]}
+                          InputLabelProps={{
+                            shrink:
+                              !!item.selectedCracker ||
+                              !!params.inputProps.value,
+                            sx: {
+                              fontSize: "0.875rem",
+                            },
+                          }}
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: {
+                              padding: "0px 8px",
+                              fontSize: "0.875rem",
+                              height: "40px",
+                            },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "0px",
+                              fontSize: "0.875rem",
+                              height: "40px",
+                            },
+                          }}
+                        />
+
+                        {!!errors[`items.${index}.selectedCracker`] && (
+                          <Typography
+                            color="error"
+                            sx={{ fontSize: "12px", marginTop: "4px" }}
+                          >
+                            {errors[`items.${index}.selectedCracker`]
+                              ?.message || "This field is required."}
+                          </Typography>
+                        )}
+                      </>
+                    )}
                     fullWidth
+                    PaperComponent={({ children }) => (
+                      <Paper
+                        sx={{
+                          maxHeight: 300,
+                          overflow: "auto",
+                          borderRadius: "8px",
+                          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        {children}
+                      </Paper>
+                    )}
+                    ListboxProps={{
+                      sx: {
+                        padding: 0,
+                        "& .MuiAutocomplete-option": {
+                          padding: "8px 12px",
+                          fontSize: "0.875rem",
+                          "&:hover": {
+                            backgroundColor: "rgba(0, 0, 0, 0.04)",
+                          },
+                        },
+                      },
+                    }}
                   />
                 </Grid>
 
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                   <TextField
                     label="Quantity"
                     type="number"
@@ -316,6 +451,14 @@ const InvoiceForm = ({ onSubmit }) => {
                     fullWidth
                     error={!!errors[`items.${index}.quantity`]}
                     helperText={errors[`items.${index}.quantity`]}
+                    sx={{
+                      ...inputFieldStyle.textFieldSx,
+                      '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                        {
+                          "-webkit-appearance": "none",
+                          margin: 0,
+                        },
+                    }}
                   />
                 </Grid>
 
@@ -324,14 +467,38 @@ const InvoiceForm = ({ onSubmit }) => {
                     label="Rate"
                     value={
                       item.selectedCracker
-                        ? CrackersPriceList.find((c) => c.id === item.selectedCracker)
-                            ?.rate || ""
-                        : ""
+                        ? CrackersPriceList.find(
+                            (c) => c.id === item.selectedCracker
+                          )?.rate || ""
+                        : 0
                     }
                     InputProps={{
                       readOnly: true,
                     }}
                     fullWidth
+                    sx={{
+                      ...inputFieldStyle.textFieldSx,
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={2}>
+                  <TextField
+                    label="Total"
+                    value={
+                      item.selectedCracker
+                        ? CrackersPriceList.find(
+                            (c) => c.id === item.selectedCracker
+                          )?.rate * item.quantity || ""
+                        : 0
+                    }
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    fullWidth
+                    sx={{
+                      ...inputFieldStyle.textFieldSx,
+                    }}
                   />
                 </Grid>
 
