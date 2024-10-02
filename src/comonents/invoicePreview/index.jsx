@@ -20,7 +20,7 @@ import "./style.css";
 
 const InvoicePreview = ({ invoiceData, handleBack }) => {
   const componentRef = useRef(null);
-
+  const { clientDetails, productDetails, discount } = invoiceData;
   const [discountedRate, setDiscountedRate] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -48,21 +48,19 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
     html2canvas(input, { scale: 3 }).then((canvas) => {
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight() + 20;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgData = canvas.toDataURL("image/jpeg", 2);
       const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
       let heightLeft = imgHeight;
       let position = 0;
-
-      const topMargin = 20;
       let pageNumber = 1;
 
       const addFooter = () => {
         pdf.setFontSize(10);
         pdf.setTextColor(150);
-        pdf.text(`Page ${pageNumber}`, pdfWidth - 20, pdfHeight - 30);
+        pdf.text(`Page ${pageNumber}`, pdfWidth - 20, pdfHeight - 10);
         pageNumber += 1;
       };
       addFooter();
@@ -71,7 +69,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       heightLeft -= pdfHeight;
 
       while (heightLeft > 0) {
-        position = heightLeft - imgHeight + topMargin;
+        position = heightLeft - imgHeight;
         pdf.addPage();
         addFooter();
         pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
@@ -83,8 +81,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       );
     });
   };
-
-  const { clientDetails, productDetails, discount } = invoiceData;
 
   const numberInWords = `${numberToWords.toWords(
     Math.floor(discountedRate)
@@ -350,7 +346,9 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   >
                     {product.quantity}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #000", textAlign: "center" }}>
+                  <TableCell
+                    sx={{ border: "1px solid #000", textAlign: "center" }}
+                  >
                     {product.unit}
                   </TableCell>
                   <TableCell
