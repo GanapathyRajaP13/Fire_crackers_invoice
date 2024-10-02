@@ -1,22 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
+  Divider,
   Grid,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Typography,
-  Divider,
 } from "@mui/material";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import numberToWords from "number-to-words";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
-import moment from "moment";
 
 const InvoicePreview = ({ invoiceData, handleBack }) => {
   const componentRef = useRef(null);
@@ -78,72 +78,17 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
         heightLeft -= pdfHeight;
       }
 
-      pdf.save(`${clientDetails?.name}.pdf`);
+      pdf.save(
+        `${clientDetails?.name}_${clientDetails?.estimateNo}_${clientDetails?.date}.pdf`
+      );
     });
   };
 
   const { clientDetails, productDetails, discount } = invoiceData;
 
-  const numberToWords = (num) => {
-    if (num === 0) return "zero";
-
-    const belowTwenty = [
-      "Zero",
-      "One",
-      "Two",
-      "Three",
-      "Four",
-      "Five",
-      "Six",
-      "Seven",
-      "Eight",
-      "Nine",
-      "Ten",
-      "Eleven",
-      "Twelve",
-      "Thirteen",
-      "Fourteen",
-      "Fifteen",
-      "Sixteen",
-      "Seventeen",
-      "Eighteen",
-      "Nineteen",
-    ];
-
-    const tens = [
-      "",
-      "",
-      "Twenty",
-      "Thirty",
-      "Forty",
-      "Fifty",
-      "Sixty",
-      "Seventy",
-      "Eighty",
-      "Ninety",
-    ];
-
-    let words = "";
-    if (num >= 1000) {
-      words += belowTwenty[Math.floor(num / 1000)] + " thousand ";
-      num %= 1000;
-    }
-    if (num >= 100) {
-      words += belowTwenty[Math.floor(num / 100)] + " hundred ";
-      num %= 100;
-    }
-    if (num >= 20) {
-      words += tens[Math.floor(num / 10)] + " ";
-      num %= 10;
-    }
-    if (num > 0) {
-      words += belowTwenty[num] + " ";
-    }
-
-    return words.trim();
-  };
-
-  const numberInWords = `${numberToWords(discountedRate)} only`;
+  const numberInWords = `${numberToWords.toWords(
+    Math.floor(discountedRate)
+  )} only`;
 
   return (
     <Box p={4}>
@@ -189,7 +134,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             <Typography>
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
-            <Typography>
+            {/* <Typography>
               <strong>77Z/1, GANDHI ROAD</strong>
             </Typography>
             <Typography>
@@ -197,14 +142,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             </Typography>
             <Typography>
               <strong>SIVAKASI</strong>
-            </Typography>
+            </Typography> */}
             <Grid container spacing={2} justifyContent="center">
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography>
                   <strong>Phone No:</strong> 9486496298
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <Typography>
                   <strong>Mobile No:</strong> 78119 71270
                 </Typography>
@@ -250,16 +195,16 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
           </Box>
 
           <Box p={2}>
-            <Grid container alignItems="stretch" spacing={2}>
-              <Grid item xs={8}>
-                <Grid container spacing={1}>
+            <Grid container alignItems="stretch" spacing={0}>
+              <Grid item xs={2}>
+                <Grid container>
                   <Grid item xs={3}>
                     <Typography>
-                      <strong>Client Name</strong>
+                      <strong>Name</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={9}>
-                    <Typography>:{clientDetails?.name}</Typography>
+                    <Typography>{`: ${clientDetails?.name}`}</Typography>
                   </Grid>
 
                   {/* <Grid item xs={3}>
@@ -270,23 +215,31 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   <Grid item xs={9}>
                     <Typography>:{clientDetails?.address1}</Typography>
                   </Grid> */}
+                </Grid>
+              </Grid>
 
-                  <Grid item xs={3}>
+              <Grid item xs={2}>
+                <Grid container>
+                  <Grid item xs={2}>
                     <Typography>
                       <strong>City</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={9}>
-                    <Typography>:{clientDetails?.city}</Typography>
+                  <Grid item xs={10}>
+                    <Typography>{`: ${clientDetails?.city}`}</Typography>
                   </Grid>
+                </Grid>
+              </Grid>
 
-                  <Grid item xs={3}>
+              <Grid item xs={4}>
+                <Grid container>
+                  <Grid item xs={2}>
                     <Typography>
                       <strong>Mobile</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={9}>
-                    <Typography>:{clientDetails?.mobile}</Typography>
+                  <Grid item xs={0}>
+                    <Typography>{`: +91 ${clientDetails?.mobile}`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -294,30 +247,21 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <Grid item>
                 <Divider
                   orientation="vertical"
-                  sx={{ height: "100%", borderWidth: 2 }}
+                  sx={{ height: "100%", borderWidth: 2, mr: 2 }}
                 />
               </Grid>
 
               <Grid item xs={3}>
                 <Grid container spacing={1}>
-                  <Grid item xs={6}>
-                    <Typography>
-                      <strong>Estimate Date</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography>
-                      :{moment(clientDetails?.date).format("DD/MM/YYYY")}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <Typography>
                       <strong>Estimate No</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Typography>:{clientDetails?.estimateNo}</Typography>
+                  <Grid item xs={8}>
+                    <Typography>
+                      {`: ${clientDetails?.estimateNo} / ${clientDetails?.date}`}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -439,7 +383,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderBottom: "none",
                         }}
                       >
-                        <strong>Goods Value:</strong>
+                        <strong>Goods Value</strong>
                       </TableCell>
                       <TableCell
                         sx={{
@@ -462,6 +406,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         <strong>Discount %</strong>
                       </TableCell>
                       <TableCell
+                        align="right"
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
@@ -507,9 +452,10 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderLeft: "1px solid #000",
                         }}
                       >
-                        <strong>Tax%:</strong>
+                        <strong>Tax %</strong>
                       </TableCell>
                       <TableCell
+                        align="right"
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
@@ -529,9 +475,10 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderLeft: "1px solid #000",
                         }}
                       >
-                        <strong>Packing%:</strong>
+                        <strong>Packing %</strong>
                       </TableCell>
                       <TableCell
+                        align="right"
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
@@ -551,7 +498,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderLeft: "1px solid #000",
                         }}
                       >
-                        <strong>Net Amount:</strong>
+                        <strong>Net Amount</strong>
                       </TableCell>
                       <TableCell
                         sx={{

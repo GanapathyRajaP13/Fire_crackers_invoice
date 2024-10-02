@@ -156,7 +156,6 @@ const InvoiceForm = ({ onSubmit }) => {
           mb: 2,
           mt: 2,
           backgroundImage: `url(${background})`,
-          // backgroundSize: "cover",
           backgroundPosition: "right",
           backgroundRepeat: "no-repeat",
           borderRadius: "4px",
@@ -343,7 +342,6 @@ const InvoiceForm = ({ onSubmit }) => {
                   onClick={handleAddItem}
                   variant="contained"
                   color="primary"
-                  // sx={{padding:'6px'}}
                 >
                   Add Item
                 </Button>
