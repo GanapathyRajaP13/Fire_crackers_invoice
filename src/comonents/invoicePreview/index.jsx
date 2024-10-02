@@ -79,7 +79,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       }
 
       pdf.save(
-        `${clientDetails?.name}_${clientDetails?.estimateNo}_${clientDetails?.date}.pdf`
+        `${clientDetails?.name}-${clientDetails?.estimateNo}-${clientDetails?.date}.pdf`
       );
     });
   };
@@ -196,9 +196,9 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
 
           <Box p={2}>
             <Grid container alignItems="stretch" spacing={0}>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Grid container>
-                  <Grid item xs={3}>
+                  <Grid item xs={2}>
                     <Typography>
                       <strong>Name</strong>
                     </Typography>
@@ -231,15 +231,15 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                 </Grid>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <Grid container>
-                  <Grid item xs={2}>
+                  <Grid item xs={3}>
                     <Typography>
-                      <strong>Mobile</strong>
+                      <strong>Mobile No</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={0}>
-                    <Typography>{`: +91 ${clientDetails?.mobile}`}</Typography>
+                  <Grid item xs={9}>
+                    <Typography>{`: ${clientDetails?.mobile}`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -247,18 +247,18 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <Grid item>
                 <Divider
                   orientation="vertical"
-                  sx={{ height: "100%", borderWidth: 2, mr: 2 }}
+                  sx={{ height: "100%", borderWidth: 2, mr: 2, ml: 1 }}
                 />
               </Grid>
 
               <Grid item xs={3}>
-                <Grid container spacing={1}>
+                <Grid container spacing={0}>
                   <Grid item xs={4}>
                     <Typography>
                       <strong>Estimate No</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={8}>
+                  <Grid item xs={7}>
                     <Typography>
                       {`: ${clientDetails?.estimateNo} / ${clientDetails?.date}`}
                     </Typography>
@@ -312,7 +312,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     border: "1px solid #000",
                   }}
                 >
-                  Rate
+                  Unit
                 </TableCell>
                 <TableCell
                   sx={{
@@ -321,7 +321,16 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     border: "1px solid #000",
                   }}
                 >
-                  Amount
+                  Rate / unit (₹)
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    border: "1px solid #000",
+                  }}
+                >
+                  Amount (₹)
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -341,6 +350,9 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   >
                     {product.quantity}
                   </TableCell>
+                  <TableCell sx={{ border: "1px solid #000", textAlign: "center" }}>
+                    {product.unit}
+                  </TableCell>
                   <TableCell
                     sx={{ border: "1px solid #000", textAlign: "right" }}
                   >
@@ -349,7 +361,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   <TableCell
                     sx={{ border: "1px solid #000", textAlign: "right" }}
                   >
-                    {getAmount(product.quantity, product.rate)}
+                    {getAmount(product.quantity, product.rate).toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}

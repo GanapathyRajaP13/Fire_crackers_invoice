@@ -67,6 +67,7 @@ const InvoiceForm = ({ onSubmit }) => {
       return {
         id: cracker.id,
         name: cracker.name,
+        unit: cracker.unit,
         quantity: item.quantity,
         rate: cracker.rate,
       };
@@ -79,7 +80,7 @@ const InvoiceForm = ({ onSubmit }) => {
         city,
         mobile: mobileNo,
         estimateNo,
-        date: moment(estimateDate).format("DD/MM/YYYY"),
+        date: moment(estimateDate).format("DD-MM-YYYY"),
       },
       productDetails,
       discount,
@@ -296,12 +297,18 @@ const InvoiceForm = ({ onSubmit }) => {
             </InputLabel>
             <TextField
               placeholder="enter estimate no"
+              type="number"
               value={estimateNo}
               onChange={handleEstimateNoChange}
               error={!!errors.estimateNo}
               fullWidth
               sx={{
                 ...inputFieldStyle.textFieldSx,
+                '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                  {
+                    "-webkit-appearance": "none",
+                    margin: 0,
+                  },
               }}
             />
             {errors.estimateNo && (
