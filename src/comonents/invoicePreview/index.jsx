@@ -256,9 +256,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   </Grid>
                   <Grid item xs={7}>
                     <Typography>
-                      {clientDetails?.estimateNo
-                        ? `: ${clientDetails?.estimateNo} / ${clientDetails?.date}`
-                        : `: ${clientDetails?.date}`}
+                      {`: ${clientDetails?.estimateNo} / ${clientDetails?.date}`}
                     </Typography>
                   </Grid>
                 </Grid>
