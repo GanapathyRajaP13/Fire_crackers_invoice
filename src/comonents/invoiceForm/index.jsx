@@ -40,7 +40,7 @@ const InvoiceForm = ({ onSubmit }) => {
       newErrors.estimateDate = "Estimate Date is required";
       setEstimateDate("");
     }
-    // if (!estimateNo) newErrors.estimateNo = "Estimate Number is required";
+    if (!estimateNo) newErrors.estimateNo = "Estimate Number is required";
     if (discount > 100) newErrors.discount = "Discount must be less than 100 %";
     items.forEach((item, index) => {
       if (!item.selectedCracker) {
@@ -133,7 +133,7 @@ const InvoiceForm = ({ onSubmit }) => {
 
   const handleEstimateNoChange = (e) => {
     setEstimateNo(e.target.value);
-    // setErrors((prev) => ({ ...prev, estimateNo: "" }));
+    setErrors((prev) => ({ ...prev, estimateNo: "" }));
   };
 
   const handleDiscountChange = (e) => {
@@ -304,7 +304,7 @@ const InvoiceForm = ({ onSubmit }) => {
               type="number"
               value={estimateNo}
               onChange={handleEstimateNoChange}
-              // error={!!errors.estimateNo}
+              error={!!errors.estimateNo}
               fullWidth
               sx={{
                 ...inputFieldStyle.textFieldSx,
@@ -315,11 +315,11 @@ const InvoiceForm = ({ onSubmit }) => {
                   },
               }}
             />
-            {/* {errors.estimateNo && (
+            {errors.estimateNo && (
               <Typography color="error" sx={{ fontSize: "12px" }}>
                 {errors.estimateNo}
               </Typography>
-            )} */}
+            )}
           </Grid>
 
           <Grid item xs={4}>

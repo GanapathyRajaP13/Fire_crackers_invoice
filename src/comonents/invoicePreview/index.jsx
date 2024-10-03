@@ -115,11 +115,11 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       >
         <Box>
           <Typography
-            // variant="h6"
+            variant="h6"
             sx={{
               fontWeight: "bold",
               border: "1px solid #000",
-              // backgroundColor: "#f5f5f5",
+              backgroundColor: "#f5f5f5",
               borderBottom: "none",
               textAlign: "center",
             }}
@@ -127,7 +127,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             ESTIMATE - RETAIL
           </Typography>
           <Box sx={{ border: "1px solid #000", textAlign: "center" }}>
-            <Typography variant="h6">
+            <Typography>
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
             {/* <Typography>
@@ -161,9 +161,9 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             borderTop: "none",
           }}
         >
-          {/* <Box
+          <Box
             sx={{
-              // backgroundColor: "#f5f5f5",
+              backgroundColor: "#f5f5f5",
               borderBottom: "1px solid #000",
               p: 1,
             }}
@@ -188,7 +188,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                 </Typography>
               </Grid>
             </Grid>
-          </Box> */}
+          </Box>
 
           <Box p={2}>
             <Grid container alignItems="stretch" spacing={0}>
@@ -240,12 +240,12 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                 </Grid>
               </Grid>
 
-              {/* <Grid item>
+              <Grid item>
                 <Divider
                   orientation="vertical"
                   sx={{ height: "100%", borderWidth: 2, mr: 2, ml: 1 }}
                 />
-              </Grid> */}
+              </Grid>
 
               <Grid item xs={3}>
                 <Grid container spacing={0}>
