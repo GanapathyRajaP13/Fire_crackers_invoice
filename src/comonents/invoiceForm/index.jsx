@@ -367,7 +367,84 @@ const InvoiceForm = ({ onSubmit }) => {
 
             {items.map((item, index) => (
               <Grid container spacing={2} key={index} sx={{ marginTop: "2px" }}>
-                <Grid item xs={4}>
+                <Grid item xs={2}>
+                  <Autocomplete
+                    options={CrackersPriceList}
+                    getOptionLabel={(option) => option.id.toString()}
+                    value={
+                      item.selectedCracker
+                        ? CrackersPriceList.find(
+                            (c) => c.id === item.selectedCracker
+                          ) || null
+                        : null
+                    }
+                    onChange={(event, newValue) => {
+                      handleItemChange(
+                        index,
+                        "selectedCracker",
+                        newValue ? newValue.id : ""
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <>
+                        <TextField
+                          {...params}
+                          placeholder="Id"
+                          variant="outlined"
+                          InputLabelProps={{
+                            shrink:
+                              !!item.selectedCracker ||
+                              !!params.inputProps.value,
+                            sx: {
+                              fontSize: "0.875rem",
+                            },
+                          }}
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: {
+                              padding: "0px 8px",
+                              fontSize: "0.875rem",
+                              height: "40px",
+                            },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "0px",
+                              fontSize: "0.875rem",
+                              height: "40px",
+                            },
+                          }}
+                        />
+                      </>
+                    )}
+                    fullWidth
+                    PaperComponent={({ children }) => (
+                      <Paper
+                        sx={{
+                          maxHeight: 300,
+                          overflow: "auto",
+                          borderRadius: "8px",
+                          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        {children}
+                      </Paper>
+                    )}
+                    ListboxProps={{
+                      sx: {
+                        padding: 0,
+                        "& .MuiAutocomplete-option": {
+                          padding: "8px 12px",
+                          fontSize: "0.875rem",
+                          "&:hover": {
+                            backgroundColor: "rgba(0, 0, 0, 0.04)",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
                   <Autocomplete
                     options={CrackersPriceList}
                     getOptionLabel={(option) => option.name}
@@ -518,7 +595,7 @@ const InvoiceForm = ({ onSubmit }) => {
                   />
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                   <Button
                     variant="outlined"
                     color="secondary"
