@@ -119,7 +119,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             sx={{
               fontWeight: "bold",
               border: "1px solid #000",
-              backgroundColor: "#f5f5f5",
+              // backgroundColor: "#f5f5f5",
               borderBottom: "none",
               textAlign: "center",
             }}
@@ -163,7 +163,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
         >
           <Box
             sx={{
-              backgroundColor: "#f5f5f5",
+              // backgroundColor: "#f5f5f5",
               borderBottom: "1px solid #000",
               p: 1,
             }}
@@ -272,7 +272,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
           }}
         >
           <Table>
-            <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
+            <TableHead>
               <TableRow>
                 <TableCell
                   sx={{
@@ -375,7 +375,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
         >
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Typography>
+              <Typography m={2}>
                 <strong>
                   Goods once Sold Can't be Taken Back (or) Exchanged.
                 </strong>
