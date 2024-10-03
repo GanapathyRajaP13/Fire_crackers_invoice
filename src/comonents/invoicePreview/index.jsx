@@ -115,7 +115,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       >
         <Box>
           <Typography
-            variant="h6"
+            // variant="h6"
             sx={{
               fontWeight: "bold",
               border: "1px solid #000",
@@ -124,10 +124,10 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               textAlign: "center",
             }}
           >
-            ESTIMATE
+            ESTIMATE - RETAIL
           </Typography>
-          <Box p={2} sx={{ border: "1px solid #000", textAlign: "center" }}>
-            <Typography>
+          <Box sx={{ border: "1px solid #000", textAlign: "center" }}>
+            <Typography variant="h6">
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
             {/* <Typography>
@@ -161,7 +161,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             borderTop: "none",
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               // backgroundColor: "#f5f5f5",
               borderBottom: "1px solid #000",
@@ -188,18 +188,18 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                 </Typography>
               </Grid>
             </Grid>
-          </Box>
+          </Box> */}
 
           <Box p={2}>
             <Grid container alignItems="stretch" spacing={0}>
               <Grid item xs={3}>
                 <Grid container>
-                  <Grid item xs={2}>
+                  <Grid item xs={4}>
                     <Typography>
-                      <strong>Name</strong>
+                      <strong>Estimate To</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid item xs={8}>
                     <Typography>{`: ${clientDetails?.name}`}</Typography>
                   </Grid>
 
@@ -234,18 +234,18 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                       <strong>Mobile No</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid item xs={4}>
                     <Typography>{`: ${clientDetails?.mobile}`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
 
-              <Grid item>
+              {/* <Grid item>
                 <Divider
                   orientation="vertical"
                   sx={{ height: "100%", borderWidth: 2, mr: 2, ml: 1 }}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={3}>
                 <Grid container spacing={0}>
@@ -256,7 +256,9 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   </Grid>
                   <Grid item xs={7}>
                     <Typography>
-                      {`: ${clientDetails?.estimateNo} / ${clientDetails?.date}`}
+                      {clientDetails?.estimateNo
+                        ? `: ${clientDetails?.estimateNo} / ${clientDetails?.date}`
+                        : `: ${clientDetails?.date}`}
                     </Typography>
                   </Grid>
                 </Grid>
