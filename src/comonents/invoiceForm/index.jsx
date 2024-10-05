@@ -147,7 +147,7 @@ const InvoiceForm = ({ onSubmit }) => {
   return (
     <Container
       sx={{
-        my: 6,
+        mt: 2,
         borderRadius: "8px",
         bgcolor: "#eee",
         p: 2,
@@ -159,7 +159,7 @@ const InvoiceForm = ({ onSubmit }) => {
           padding: "20px",
           backgroundColor: "#adb4b9",
           mb: 2,
-          mt: 2,
+          mt: 1,
           backgroundImage: `url(${background})`,
           backgroundPosition: "right",
           backgroundRepeat: "no-repeat",
@@ -349,7 +349,7 @@ const InvoiceForm = ({ onSubmit }) => {
             )}
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <Grid container spacing={0} pt={2}>
               <Grid item xs={2}>
                 <Typography variant="h6">Product Items</Typography>
@@ -608,9 +608,281 @@ const InvoiceForm = ({ onSubmit }) => {
                 </Grid>
               </Grid>
             ))}
+          </Grid> */}
+
+          <Grid item xs={12}>
+            <Grid container spacing={0} pt={2}>
+              <Grid item xs={2}>
+                <Typography variant="h6">Product Items</Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  onClick={handleAddItem}
+                  variant="contained"
+                  color="primary"
+                >
+                  Add Item
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Box
+              sx={{
+                maxHeight: "200px",
+                overflowY: "auto",
+                overflowX: "hidden",
+                paddingRight: "10px",
+              }}
+            >
+              {items.map((item, index) => (
+                <Grid
+                  container
+                  spacing={2}
+                  key={index}
+                  sx={{ marginTop: "2px" }}
+                >
+                  <Grid item xs={2}>
+                    <Autocomplete
+                      options={CrackersPriceList}
+                      getOptionLabel={(option) => option.id.toString()}
+                      value={
+                        item.selectedCracker
+                          ? CrackersPriceList.find(
+                              (c) => c.id === item.selectedCracker
+                            ) || null
+                          : null
+                      }
+                      onChange={(event, newValue) => {
+                        handleItemChange(
+                          index,
+                          "selectedCracker",
+                          newValue ? newValue.id : ""
+                        );
+                      }}
+                      renderInput={(params) => (
+                        <>
+                          <TextField
+                            {...params}
+                            placeholder="Id"
+                            variant="outlined"
+                            InputLabelProps={{
+                              shrink:
+                                !!item.selectedCracker ||
+                                !!params.inputProps.value,
+                              sx: { fontSize: "0.875rem" },
+                            }}
+                            InputProps={{
+                              ...params.InputProps,
+                              sx: {
+                                padding: "0px 8px",
+                                fontSize: "0.875rem",
+                                height: "40px",
+                              },
+                            }}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "0px",
+                                fontSize: "0.875rem",
+                                height: "40px",
+                              },
+                            }}
+                          />
+                        </>
+                      )}
+                      fullWidth
+                      PaperComponent={({ children }) => (
+                        <Paper
+                          sx={{
+                            maxHeight: 300,
+                            overflow: "auto",
+                            borderRadius: "8px",
+                            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                          }}
+                        >
+                          {children}
+                        </Paper>
+                      )}
+                      ListboxProps={{
+                        sx: {
+                          padding: 0,
+                          "& .MuiAutocomplete-option": {
+                            padding: "8px 12px",
+                            fontSize: "0.875rem",
+                            "&:hover": {
+                              backgroundColor: "rgba(0, 0, 0, 0.04)",
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={3}>
+                    <Autocomplete
+                      options={CrackersPriceList}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        item.selectedCracker
+                          ? CrackersPriceList.find(
+                              (c) => c.id === item.selectedCracker
+                            ) || null
+                          : null
+                      }
+                      onChange={(event, newValue) => {
+                        handleItemChange(
+                          index,
+                          "selectedCracker",
+                          newValue ? newValue.id : ""
+                        );
+                      }}
+                      renderInput={(params) => (
+                        <>
+                          <TextField
+                            {...params}
+                            placeholder="Select Cracker"
+                            variant="outlined"
+                            error={!!errors[`items.${index}.selectedCracker`]}
+                            InputLabelProps={{
+                              shrink:
+                                !!item.selectedCracker ||
+                                !!params.inputProps.value,
+                              sx: { fontSize: "0.875rem" },
+                            }}
+                            InputProps={{
+                              ...params.InputProps,
+                              sx: {
+                                padding: "0px 8px",
+                                fontSize: "0.875rem",
+                                height: "40px",
+                              },
+                            }}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "0px",
+                                fontSize: "0.875rem",
+                                height: "40px",
+                              },
+                            }}
+                          />
+
+                          {!!errors[`items.${index}.selectedCracker`] && (
+                            <Typography
+                              color="error"
+                              sx={{ fontSize: "12px", marginTop: "4px" }}
+                            >
+                              {errors[`items.${index}.selectedCracker`] ||
+                                "This field is required."}
+                            </Typography>
+                          )}
+                        </>
+                      )}
+                      fullWidth
+                      PaperComponent={({ children }) => (
+                        <Paper
+                          sx={{
+                            maxHeight: 300,
+                            overflow: "auto",
+                            borderRadius: "8px",
+                            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                          }}
+                        >
+                          {children}
+                        </Paper>
+                      )}
+                      ListboxProps={{
+                        sx: {
+                          padding: 0,
+                          "& .MuiAutocomplete-option": {
+                            padding: "8px 12px",
+                            fontSize: "0.875rem",
+                            "&:hover": {
+                              backgroundColor: "rgba(0, 0, 0, 0.04)",
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={2}>
+                    <TextField
+                      label="Quantity"
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleItemChange(index, "quantity", e.target.value)
+                      }
+                      fullWidth
+                      error={!!errors[`items.${index}.quantity`]}
+                      helperText={errors[`items.${index}.quantity`]}
+                      sx={{
+                        ...inputFieldStyle.textFieldSx,
+                        '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                          {
+                            "-webkit-appearance": "none",
+                            margin: 0,
+                          },
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={2}>
+                    <TextField
+                      label="Rate"
+                      value={
+                        item.selectedCracker
+                          ? CrackersPriceList.find(
+                              (c) => c.id === item.selectedCracker
+                            )?.rate || ""
+                          : 0
+                      }
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      fullWidth
+                      sx={{
+                        ...inputFieldStyle.textFieldSx,
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={2}>
+                    <TextField
+                      label="Total"
+                      value={
+                        item.selectedCracker
+                          ? CrackersPriceList.find(
+                              (c) => c.id === item.selectedCracker
+                            )?.rate * item.quantity || ""
+                          : 0
+                      }
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      fullWidth
+                      sx={{
+                        ...inputFieldStyle.textFieldSx,
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={1}>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={() => handleRemoveItem(index)}
+                      sx={{ fontWeight: "bold" }}
+                      disabled={items.length === 1}
+                    >
+                      Remove
+                    </Button>
+                  </Grid>
+                </Grid>
+              ))}
+            </Box>
           </Grid>
 
-          <Grid item xs={12} mb={2}>
+          <Grid item xs={12}>
             <Button variant="contained" color="primary" type="submit">
               Submit
             </Button>
