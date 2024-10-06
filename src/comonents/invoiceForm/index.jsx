@@ -631,13 +631,13 @@ const InvoiceForm = ({ onSubmit }) => {
                 maxHeight: "200px",
                 overflowY: "auto",
                 overflowX: "hidden",
-                paddingRight: "10px",
+                // paddingRight: "10px",
               }}
             >
               {items.map((item, index) => (
                 <Grid
                   container
-                  spacing={2}
+                  spacing={1}
                   key={index}
                   sx={{ marginTop: "2px" }}
                 >
@@ -871,7 +871,7 @@ const InvoiceForm = ({ onSubmit }) => {
                       variant="outlined"
                       color="secondary"
                       onClick={() => handleRemoveItem(index)}
-                      sx={{ fontWeight: "bold" }}
+                      sx={{ fontWeight: "bold", width:'80px' }}
                       disabled={items.length === 1}
                     >
                       Remove
