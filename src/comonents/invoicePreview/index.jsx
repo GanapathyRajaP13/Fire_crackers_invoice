@@ -115,11 +115,9 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
       >
         <Box>
           <Typography
-            // variant="h6"
             sx={{
               fontWeight: "bold",
               border: "1px solid #000",
-              // backgroundColor: "#f5f5f5",
               borderBottom: "none",
               textAlign: "center",
             }}
@@ -130,24 +128,15 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             <Typography variant="h6">
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
-            {/* <Typography>
-              <strong>77Z/1, GANDHI ROAD</strong>
-            </Typography>
-            <Typography>
-              <strong>NEAR SATHYA MOBILES</strong>
-            </Typography>
-            <Typography>
-              <strong>SIVAKASI</strong>
-            </Typography> */}
             <Grid container spacing={2} justifyContent="center">
               <Grid item xs={2}>
                 <Typography>
-                  <strong>Phone No:</strong> 9486496298
+                  <strong>Phone No:</strong> 9842972802
                 </Typography>
               </Grid>
               <Grid item xs={2}>
                 <Typography>
-                  <strong>Mobile No:</strong> 78119 71270
+                  <strong>Mobile No:</strong> 7806999169
                 </Typography>
               </Grid>
             </Grid>
@@ -161,35 +150,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             borderTop: "none",
           }}
         >
-          {/* <Box
-            sx={{
-              // backgroundColor: "#f5f5f5",
-              borderBottom: "1px solid #000",
-              p: 1,
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <Typography sx={{ fontWeight: "bold" }}>
-                  Client Details:
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography>
-                  Agent Name:{" "}
-                  <Typography component="span" sx={{ fontWeight: "bold" }}>
-                    Direct
-                  </Typography>
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography sx={{ fontWeight: "bold", paddingLeft: "18px" }}>
-                  Estimate Details:
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box> */}
-
           <Box p={2}>
             <Grid container alignItems="stretch" spacing={0}>
               <Grid item xs={3}>
@@ -202,15 +162,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   <Grid item xs={8}>
                     <Typography>{`: ${clientDetails?.name}`}</Typography>
                   </Grid>
-
-                  {/* <Grid item xs={3}>
-                    <Typography>
-                      <strong>Address 1</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography>:{clientDetails?.address1}</Typography>
-                  </Grid> */}
                 </Grid>
               </Grid>
 
@@ -239,13 +190,6 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   </Grid>
                 </Grid>
               </Grid>
-
-              {/* <Grid item>
-                <Divider
-                  orientation="vertical"
-                  sx={{ height: "100%", borderWidth: 2, mr: 2, ml: 1 }}
-                />
-              </Grid> */}
 
               <Grid item xs={3}>
                 <Grid container spacing={0}>

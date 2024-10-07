@@ -1,25 +1,25 @@
-import React, { useState } from "react";
 import {
-  TextField,
-  Button,
-  Grid,
-  Container,
-  Typography,
   Autocomplete,
-  InputLabel,
   Box,
+  Button,
+  Container,
+  Grid,
+  InputLabel,
   Paper,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
+import React, { useEffect, useRef, useState } from "react";
+import background from "../../../public/Crackers.png";
 import { CrackersPriceList } from "../../crackersPriceList";
 import { inputFieldStyle } from "./style";
-import background from "../../../public/Crackers.png";
 
 const InvoiceForm = ({ onSubmit }) => {
+  const boxRef = useRef(null);
   const [clientName, setClientName] = useState("");
-  // const [address1, setAddress1] = useState("");
   const [city, setCity] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [estimateDate, setEstimateDate] = useState(null);
@@ -32,7 +32,6 @@ const InvoiceForm = ({ onSubmit }) => {
     const newErrors = {};
 
     if (!clientName) newErrors.clientName = "Client Name is required";
-    // if (!address1) newErrors.address1 = "Address 1 is required";
     if (!city) newErrors.city = "City is required";
     if (!mobileNo.match(/^\d{10}$/))
       newErrors.mobileNo = "Mobile number must be 10 digits";
@@ -40,43 +39,38 @@ const InvoiceForm = ({ onSubmit }) => {
       newErrors.estimateDate = "Estimate Date is required";
       setEstimateDate("");
     }
-    // if (!estimateNo) newErrors.estimateNo = "Estimate Number is required";
     if (discount > 100) newErrors.discount = "Discount must be less than 100 %";
-    items.forEach((item, index) => {
-      if (!item.selectedCracker) {
-        newErrors[`items.${index}.selectedCracker`] =
-          "Please select a cracker for all items";
-      }
-      if (item.quantity < 1) {
-        newErrors[`items.${index}.quantity`] = "Quantity must be at least 1";
-      }
-    });
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  useEffect(() => {
+    if (boxRef.current) {
+      boxRef.current.scrollTop = boxRef.current.scrollHeight;
+    }
+  }, [items]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
-    const productDetails = items.map((item) => {
-      const cracker = CrackersPriceList.find(
-        (c) => c.id === item.selectedCracker
-      );
-      return {
-        id: cracker.id,
-        name: cracker.name,
-        unit: cracker.unit,
-        quantity: item.quantity,
-        rate: cracker.rate,
-      };
-    });
+    const productDetails = items
+      .filter((product) => product.selectedCracker !== "")
+      .map((item) => {
+        const cracker = CrackersPriceList.find(
+          (c) => c.id === item.selectedCracker
+        );
+        return {
+          id: cracker.id,
+          name: cracker.name,
+          unit: cracker.unit,
+          quantity: item.quantity,
+          rate: cracker.rate,
+        };
+      });
 
     const formattedData = {
       clientDetails: {
         name: clientName,
-        // address1,
         city,
         mobile: mobileNo,
         estimateNo,
@@ -90,7 +84,10 @@ const InvoiceForm = ({ onSubmit }) => {
   };
 
   const handleAddItem = () => {
-    setItems([...items, { selectedCracker: "", quantity: 1 }]);
+    const emptyRow = items.some((item) => item.selectedCracker === "");
+    if (!emptyRow) {
+      setItems([...items, { selectedCracker: "", quantity: 1 }]);
+    }
   };
 
   const handleRemoveItem = (index) => {
@@ -105,17 +102,13 @@ const InvoiceForm = ({ onSubmit }) => {
 
     const errorKey = `items.${index}.${field}`;
     setErrors((prev) => ({ ...prev, [errorKey]: "" }));
+    handleAddItem();
   };
 
   const handleClientNameChange = (e) => {
     setClientName(e.target.value);
     setErrors((prev) => ({ ...prev, clientName: "" }));
   };
-
-  // const handleAddress1Change = (e) => {
-  //   setAddress1(e.target.value);
-  //   setErrors((prev) => ({ ...prev, address1: "" }));
-  // };
 
   const handleCityChange = (e) => {
     setCity(e.target.value);
@@ -133,7 +126,6 @@ const InvoiceForm = ({ onSubmit }) => {
 
   const handleEstimateNoChange = (e) => {
     setEstimateNo(e.target.value);
-    // setErrors((prev) => ({ ...prev, estimateNo: "" }));
   };
 
   const handleDiscountChange = (e) => {
@@ -193,27 +185,6 @@ const InvoiceForm = ({ onSubmit }) => {
               </Typography>
             )}
           </Grid>
-
-          {/* <Grid item xs={4}>
-            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
-              Address {<span>*</span>}
-            </InputLabel>
-            <TextField
-              placeholder="Address"
-              value={address1}
-              onChange={handleAddress1Change}
-              error={!!errors.address1}
-              fullWidth
-              sx={{
-                ...inputFieldStyle.textFieldSx,
-              }}
-            />
-            {errors.address1 && (
-              <Typography color="error" sx={{ fontSize: "12px" }}>
-                {errors.address1}
-              </Typography>
-            )}
-          </Grid> */}
 
           <Grid item xs={4}>
             <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
@@ -304,7 +275,6 @@ const InvoiceForm = ({ onSubmit }) => {
               type="number"
               value={estimateNo}
               onChange={handleEstimateNoChange}
-              // error={!!errors.estimateNo}
               fullWidth
               sx={{
                 ...inputFieldStyle.textFieldSx,
@@ -315,11 +285,6 @@ const InvoiceForm = ({ onSubmit }) => {
                   },
               }}
             />
-            {/* {errors.estimateNo && (
-              <Typography color="error" sx={{ fontSize: "12px" }}>
-                {errors.estimateNo}
-              </Typography>
-            )} */}
           </Grid>
 
           <Grid item xs={4}>
@@ -349,289 +314,24 @@ const InvoiceForm = ({ onSubmit }) => {
             )}
           </Grid>
 
-          {/* <Grid item xs={12}>
-            <Grid container spacing={0} pt={2}>
-              <Grid item xs={2}>
-                <Typography variant="h6">Product Items</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Button
-                  onClick={handleAddItem}
-                  variant="contained"
-                  color="primary"
-                >
-                  Add Item
-                </Button>
-              </Grid>
-            </Grid>
-
-            {items.map((item, index) => (
-              <Grid container spacing={2} key={index} sx={{ marginTop: "2px" }}>
-                <Grid item xs={2}>
-                  <Autocomplete
-                    options={CrackersPriceList}
-                    getOptionLabel={(option) => option.id.toString()}
-                    value={
-                      item.selectedCracker
-                        ? CrackersPriceList.find(
-                            (c) => c.id === item.selectedCracker
-                          ) || null
-                        : null
-                    }
-                    onChange={(event, newValue) => {
-                      handleItemChange(
-                        index,
-                        "selectedCracker",
-                        newValue ? newValue.id : ""
-                      );
-                    }}
-                    renderInput={(params) => (
-                      <>
-                        <TextField
-                          {...params}
-                          placeholder="Id"
-                          variant="outlined"
-                          InputLabelProps={{
-                            shrink:
-                              !!item.selectedCracker ||
-                              !!params.inputProps.value,
-                            sx: {
-                              fontSize: "0.875rem",
-                            },
-                          }}
-                          InputProps={{
-                            ...params.InputProps,
-                            sx: {
-                              padding: "0px 8px",
-                              fontSize: "0.875rem",
-                              height: "40px",
-                            },
-                          }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              padding: "0px",
-                              fontSize: "0.875rem",
-                              height: "40px",
-                            },
-                          }}
-                        />
-                      </>
-                    )}
-                    fullWidth
-                    PaperComponent={({ children }) => (
-                      <Paper
-                        sx={{
-                          maxHeight: 300,
-                          overflow: "auto",
-                          borderRadius: "8px",
-                          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                        }}
-                      >
-                        {children}
-                      </Paper>
-                    )}
-                    ListboxProps={{
-                      sx: {
-                        padding: 0,
-                        "& .MuiAutocomplete-option": {
-                          padding: "8px 12px",
-                          fontSize: "0.875rem",
-                          "&:hover": {
-                            backgroundColor: "rgba(0, 0, 0, 0.04)",
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Autocomplete
-                    options={CrackersPriceList}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      item.selectedCracker
-                        ? CrackersPriceList.find(
-                            (c) => c.id === item.selectedCracker
-                          ) || null
-                        : null
-                    }
-                    onChange={(event, newValue) => {
-                      handleItemChange(
-                        index,
-                        "selectedCracker",
-                        newValue ? newValue.id : ""
-                      );
-                    }}
-                    renderInput={(params) => (
-                      <>
-                        <TextField
-                          {...params}
-                          placeholder="Select Cracker"
-                          variant="outlined"
-                          error={!!errors[`items.${index}.selectedCracker`]}
-                          InputLabelProps={{
-                            shrink:
-                              !!item.selectedCracker ||
-                              !!params.inputProps.value,
-                            sx: {
-                              fontSize: "0.875rem",
-                            },
-                          }}
-                          InputProps={{
-                            ...params.InputProps,
-                            sx: {
-                              padding: "0px 8px",
-                              fontSize: "0.875rem",
-                              height: "40px",
-                            },
-                          }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              padding: "0px",
-                              fontSize: "0.875rem",
-                              height: "40px",
-                            },
-                          }}
-                        />
-
-                        {!!errors[`items.${index}.selectedCracker`] && (
-                          <Typography
-                            color="error"
-                            sx={{ fontSize: "12px", marginTop: "4px" }}
-                          >
-                            {errors[`items.${index}.selectedCracker`]
-                              ?.message || "This field is required."}
-                          </Typography>
-                        )}
-                      </>
-                    )}
-                    fullWidth
-                    PaperComponent={({ children }) => (
-                      <Paper
-                        sx={{
-                          maxHeight: 300,
-                          overflow: "auto",
-                          borderRadius: "8px",
-                          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                        }}
-                      >
-                        {children}
-                      </Paper>
-                    )}
-                    ListboxProps={{
-                      sx: {
-                        padding: 0,
-                        "& .MuiAutocomplete-option": {
-                          padding: "8px 12px",
-                          fontSize: "0.875rem",
-                          "&:hover": {
-                            backgroundColor: "rgba(0, 0, 0, 0.04)",
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={2}>
-                  <TextField
-                    label="Quantity"
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleItemChange(index, "quantity", e.target.value)
-                    }
-                    fullWidth
-                    error={!!errors[`items.${index}.quantity`]}
-                    helperText={errors[`items.${index}.quantity`]}
-                    sx={{
-                      ...inputFieldStyle.textFieldSx,
-                      '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
-                        {
-                          "-webkit-appearance": "none",
-                          margin: 0,
-                        },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={2}>
-                  <TextField
-                    label="Rate"
-                    value={
-                      item.selectedCracker
-                        ? CrackersPriceList.find(
-                            (c) => c.id === item.selectedCracker
-                          )?.rate || ""
-                        : 0
-                    }
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    fullWidth
-                    sx={{
-                      ...inputFieldStyle.textFieldSx,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={2}>
-                  <TextField
-                    label="Total"
-                    value={
-                      item.selectedCracker
-                        ? CrackersPriceList.find(
-                            (c) => c.id === item.selectedCracker
-                          )?.rate * item.quantity || ""
-                        : 0
-                    }
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    fullWidth
-                    sx={{
-                      ...inputFieldStyle.textFieldSx,
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={1}>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => handleRemoveItem(index)}
-                    sx={{ fontWeight: "bold" }}
-                    disabled={items.length === 1}
-                  >
-                    Remove
-                  </Button>
-                </Grid>
-              </Grid>
-            ))}
-          </Grid> */}
-
           <Grid item xs={12}>
             <Grid container spacing={0} pt={2}>
               <Grid item xs={2}>
                 <Typography variant="h6">Product Items</Typography>
               </Grid>
-              <Grid item xs={2}>
-                <Button
-                  onClick={handleAddItem}
-                  variant="contained"
-                  color="primary"
-                >
-                  Add Item
-                </Button>
-              </Grid>
             </Grid>
 
             <Box
+              ref={boxRef}
               sx={{
                 maxHeight: "200px",
                 overflowY: "auto",
                 overflowX: "hidden",
-                // paddingRight: "10px",
+                border: "1px solid black",
+                p: 1,
+                boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
+                borderRadius: "8px",
+                scrollBehavior: "smooth",
               }}
             >
               {items.map((item, index) => (
@@ -871,7 +571,7 @@ const InvoiceForm = ({ onSubmit }) => {
                       variant="outlined"
                       color="secondary"
                       onClick={() => handleRemoveItem(index)}
-                      sx={{ fontWeight: "bold", width:'80px' }}
+                      sx={{ fontWeight: "bold", width: "80px" }}
                       disabled={items.length === 1}
                     >
                       Remove
