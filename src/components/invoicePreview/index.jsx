@@ -529,7 +529,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     sx={{
                       borderBottom: "1px solid #000",
                       width: "80px",
-                      textAlign: "center",
+                      textAlign: "right",
                     }}
                   >
                     <strong>.00</strong>

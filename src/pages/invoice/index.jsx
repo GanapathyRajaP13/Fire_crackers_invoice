@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import InvoiceForm from "../../comonents/invoiceForm";
-import InvoicePreview from "../../comonents/invoicePreview";
+import React, { useState, useEffect } from "react";
+import InvoiceForm from "../../components/invoiceForm";
+import InvoicePreview from "../../components/invoicePreview";
 
 const Invoice = () => {
   const [invoiceData, setInvoiceData] = useState([]);
@@ -8,17 +8,31 @@ const Invoice = () => {
 
   const handleSubmit = (data, bool) => {
     setInvoiceData(data);
+    localStorage.setItem("items", JSON.stringify(data));
     setIsSubmitted(bool);
   };
 
   const handleBack = () => {
     setIsSubmitted(false);
-    setInvoiceData([]);
   };
+
+  useEffect(() => {
+    const savedItems = localStorage.getItem("items");
+    if (savedItems) {
+      try {
+        setInvoiceData(JSON.parse(savedItems));
+      } catch (error) {
+        console.error("Failed to parse saved items:", error);
+        setInvoiceData([]);
+      }
+    }
+  }, []);
 
   return (
     <div>
-      {!isSubmitted && <InvoiceForm onSubmit={handleSubmit} />}
+      {!isSubmitted && (
+        <InvoiceForm onSubmit={handleSubmit} invoiceData={invoiceData} />
+      )}
       {isSubmitted && (
         <InvoicePreview invoiceData={invoiceData} handleBack={handleBack} />
       )}

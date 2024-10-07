@@ -17,15 +17,36 @@ import background from "../../../public/Crackers.png";
 import { CrackersPriceList } from "../../crackersPriceList";
 import { inputFieldStyle } from "./style";
 
-const InvoiceForm = ({ onSubmit }) => {
+const InvoiceForm = ({ onSubmit, invoiceData }) => {
   const boxRef = useRef(null);
-  const [clientName, setClientName] = useState("");
-  const [city, setCity] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [estimateDate, setEstimateDate] = useState(null);
-  const [estimateNo, setEstimateNo] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [items, setItems] = useState([{ selectedCracker: "", quantity: 1 }]);
+  const quantityRefs = useRef([]);
+  const selectRef = useRef([]);
+  const [clientName, setClientName] = useState(
+    invoiceData?.clientDetails?.name ?? ""
+  );
+  const [city, setCity] = useState(invoiceData?.clientDetails?.city ?? "");
+  const [mobileNo, setMobileNo] = useState(
+    invoiceData?.clientDetails?.mobile ?? ""
+  );
+  const [estimateDate, setEstimateDate] = useState(
+    invoiceData?.length === 0
+      ? null
+      : moment(invoiceData?.clientDetails?.date).toDate()
+  );
+  const [estimateNo, setEstimateNo] = useState(
+    invoiceData?.clientDetails?.estimateNo ?? ""
+  );
+  const [discount, setDiscount] = useState(invoiceData?.discount ?? 0);
+  const [items, setItems] = useState(
+    invoiceData?.productDetails?.length > 0
+      ? invoiceData?.productDetails?.map((item) => {
+          return {
+            selectedCracker: item.id,
+            ...item,
+          };
+        })
+      : [{ selectedCracker: "", quantity: 1 }]
+  );
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -39,6 +60,15 @@ const InvoiceForm = ({ onSubmit }) => {
       newErrors.estimateDate = "Estimate Date is required";
       setEstimateDate("");
     }
+    items.forEach((item, index) => {
+      if (!item.selectedCracker) {
+        newErrors[`items.${index}.selectedCracker`] =
+          "Please select a cracker for all items";
+      }
+      if (item.quantity < 1) {
+        newErrors[`items.${index}.quantity`] = "Quantity must be at least 1";
+      }
+    });
     if (discount > 100) newErrors.discount = "Discount must be less than 100 %";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -49,6 +79,20 @@ const InvoiceForm = ({ onSubmit }) => {
       boxRef.current.scrollTop = boxRef.current.scrollHeight;
     }
   }, [items]);
+
+  const clearForm = () => {
+    localStorage.clear();
+    onSubmit([], false);
+    setClientName("");
+    setCity("");
+    setMobileNo("");
+    setEstimateDate(null);
+    setEstimateNo("");
+    setDiscount("");
+    setItems([{ selectedCracker: "", quantity: 1 }]);
+    setErrors({});
+    quantityRefs.current = [];
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -86,7 +130,19 @@ const InvoiceForm = ({ onSubmit }) => {
   const handleAddItem = () => {
     const emptyRow = items.some((item) => item.selectedCracker === "");
     if (!emptyRow) {
-      setItems([...items, { selectedCracker: "", quantity: 1 }]);
+      setItems((prevItems) => {
+        const updatedItems = [
+          ...prevItems,
+          { selectedCracker: "", quantity: 1 },
+        ];
+
+        setTimeout(() => {
+          const newIndex = updatedItems.length - 1;
+          selectRef.current[newIndex]?.focus();
+        }, 0);
+
+        return updatedItems;
+      });
     }
   };
 
@@ -102,7 +158,7 @@ const InvoiceForm = ({ onSubmit }) => {
 
     const errorKey = `items.${index}.${field}`;
     setErrors((prev) => ({ ...prev, [errorKey]: "" }));
-    handleAddItem();
+    quantityRefs.current[index]?.focus();
   };
 
   const handleClientNameChange = (e) => {
@@ -134,6 +190,29 @@ const InvoiceForm = ({ onSubmit }) => {
       ...prev,
       discount: e.target.value < 100 ? "" : "Discount must be less than 100 %",
     }));
+  };
+
+  const handleEnterSelect = (e, index) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const inputValue = e.target.value;
+      if (
+        inputValue !== "" &&
+        !isNaN(inputValue) &&
+        inputValue > 0 &&
+        inputValue <= CrackersPriceList.length
+      ) {
+        handleItemChange(index, "selectedCracker", Number(inputValue));
+        quantityRefs.current[index]?.focus();
+      }
+    }
+  };
+
+  const handleEnterQuantity = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.value !== "" && handleAddItem();
+    }
   };
 
   return (
@@ -243,6 +322,7 @@ const InvoiceForm = ({ onSubmit }) => {
                 Estimate Date {<span>*</span>}
               </InputLabel>
               <DatePicker
+                format="dd/MM/yyyy"
                 id="estimate-date"
                 value={estimateDate}
                 onChange={(date) => {
@@ -268,7 +348,7 @@ const InvoiceForm = ({ onSubmit }) => {
 
           <Grid item xs={4}>
             <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
-              Estimate No {<span>*</span>}
+              Estimate No
             </InputLabel>
             <TextField
               placeholder="enter estimate no"
@@ -359,12 +439,14 @@ const InvoiceForm = ({ onSubmit }) => {
                           newValue ? newValue.id : ""
                         );
                       }}
+                      onKeyDown={(e) => handleEnterSelect(e, index)}
                       renderInput={(params) => (
                         <>
                           <TextField
                             {...params}
                             placeholder="Id"
                             variant="outlined"
+                            inputRef={(el) => (selectRef.current[index] = el)}
                             InputLabelProps={{
                               shrink:
                                 !!item.selectedCracker ||
@@ -435,6 +517,7 @@ const InvoiceForm = ({ onSubmit }) => {
                           newValue ? newValue.id : ""
                         );
                       }}
+                      onKeyDown={(e) => handleEnterSelect(e, index)}
                       renderInput={(params) => (
                         <>
                           <TextField
@@ -512,9 +595,10 @@ const InvoiceForm = ({ onSubmit }) => {
                       onChange={(e) =>
                         handleItemChange(index, "quantity", e.target.value)
                       }
+                      inputRef={(el) => (quantityRefs.current[index] = el)}
+                      onKeyDown={(e) => handleEnterQuantity(e)}
                       fullWidth
                       error={!!errors[`items.${index}.quantity`]}
-                      helperText={errors[`items.${index}.quantity`]}
                       sx={{
                         ...inputFieldStyle.textFieldSx,
                         '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
@@ -524,6 +608,15 @@ const InvoiceForm = ({ onSubmit }) => {
                           },
                       }}
                     />
+                    {!!errors[`items.${index}.quantity`] && (
+                      <Typography
+                        color="error"
+                        sx={{ fontSize: "12px", marginTop: "4px" }}
+                      >
+                        {errors[`items.${index}.quantity`] ||
+                          "This field is required."}
+                      </Typography>
+                    )}
                   </Grid>
 
                   <Grid item xs={2}>
@@ -582,9 +675,14 @@ const InvoiceForm = ({ onSubmit }) => {
             </Box>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={1}>
             <Button variant="contained" color="primary" type="submit">
               Submit
+            </Button>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={clearForm}>
+              Clear
             </Button>
           </Grid>
         </Grid>
