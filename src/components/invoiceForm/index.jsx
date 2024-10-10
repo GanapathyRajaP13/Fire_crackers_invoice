@@ -8,6 +8,7 @@ import {
   InputLabel,
   Paper,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -50,7 +51,9 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
   );
   const [errors, setErrors] = useState({});
 
-  const [mobileNumbers, setMobileNumbers] = useState(invoiceData?.mobileNumbers ?? []);
+  const [mobileNumbers, setMobileNumbers] = useState(
+    invoiceData?.mobileNumbers ?? []
+  );
   const [mobileNoSet, setMobileNoSet] = useState("");
 
   const validateForm = () => {
@@ -302,7 +305,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
               Client Name {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="enter name"
+              placeholder="Enter name"
               value={clientName}
               onChange={handleClientNameChange}
               error={!!errors.clientName}
@@ -323,7 +326,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
               City {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="enter city"
+              placeholder="Enter city"
               value={city}
               onChange={handleCityChange}
               error={!!errors.city}
@@ -344,7 +347,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
               Mobile No {<span>*</span>}
             </InputLabel>
             <TextField
-              placeholder="enter mobile"
+              placeholder="Enter mobile number"
               type="number"
               value={mobileNo}
               onChange={handleMobileNoChange}
@@ -369,7 +372,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
           <Grid item xs={4}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <InputLabel
-                htmlFor="estimate-date"
+                htmlFor="Estimate-date"
                 sx={{ ...inputFieldStyle.labelStyle }}
               >
                 Estimate Date {<span>*</span>}
@@ -404,7 +407,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
               Estimate No
             </InputLabel>
             <TextField
-              placeholder="enter estimate no"
+              placeholder="Enter estimate no"
               type="number"
               value={estimateNo}
               onChange={handleEstimateNoChange}
@@ -425,7 +428,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
               Discount (%)
             </InputLabel>
             <TextField
-              placeholder="enter discount"
+              placeholder="Enter discount"
               type="number"
               value={discount}
               onChange={handleDiscountChange}
@@ -451,23 +454,25 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
             <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
               Mobile No {<span>*</span>}
             </InputLabel>
-            <TextField
-              placeholder="Enter mobile number"
-              type="number"
-              value={mobileNoSet}
-              onChange={(e) => handleSaveMobileSet(e.target.value)}
-              onKeyDown={(e) => handleEnterMobileSet(e)}
-              error={!!errors.mobileNoSet}
-              fullWidth
-              sx={{
-                ...inputFieldStyle.textFieldSx,
-                '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
-                  {
-                    "-webkit-appearance": "none",
-                    margin: 0,
-                  },
-              }}
-            />
+            <Tooltip title="Enter 10 digit mobile number and press enter" arrow>
+              <TextField
+                placeholder="Enter mobile number"
+                type="number"
+                value={mobileNoSet}
+                onChange={(e) => handleSaveMobileSet(e.target.value)}
+                onKeyDown={(e) => handleEnterMobileSet(e)}
+                error={!!errors.mobileNoSet}
+                fullWidth
+                sx={{
+                  ...inputFieldStyle.textFieldSx,
+                  '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                    {
+                      "-webkit-appearance": "none",
+                      margin: 0,
+                    },
+                }}
+              />
+            </Tooltip>
             {(errors.mobileNoSet || errors.mobileNumbers) && (
               <Typography color="error" sx={{ fontSize: "12px" }}>
                 {errors.mobileNoSet ?? errors.mobileNumbers}

@@ -7,8 +7,8 @@ const createWindow = () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   mainWindow = new BrowserWindow({
-    width: Math.min(1280, width),
-    height: Math.min(720, height),
+    width: width,
+    height: height,
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
