@@ -1,4 +1,5 @@
 {
+  "$schema": "./schemas/package.schema.json",
   "name": "sivakasi-crackers",
   "version": "1.0.0",
   "description": "Crackers Invoice Application",
@@ -6,7 +7,7 @@
   "main": "src/electron.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --mode production",
+    "build": "node --max_old_space_size=4096 node_modules/vite/bin/vite.js build --mode production",
     "serve": "vite preview",
     "electron:serve": "vite build && electron src/electron.js",
     "electron:package": "electron-builder --dir",
@@ -19,7 +20,9 @@
       "dist/**/*",
       "src/preload.js",
       "src/electron.js",
-      "node_modules/**/*"
+      "!node_modules/{unused-module-1,unused-module-2}",
+      "!**/*.map",
+      "!node_modules/electron/dist/locales/**"
     ],
     "directories": {
       "buildResources": "public"
@@ -34,7 +37,13 @@
           ]
         }
       ],
-      "icon": "public/Firecrackers.png"
+      "icon": "public/Firecrackers.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": true
     },
     "mac": {
       "target": "dmg",
@@ -44,13 +53,14 @@
       "target": "AppImage",
       "icon": "public/icon.png"
     },
-    "asar": false
+    "asar": true,
+    "compression": "maximum"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^6.0.0",
     "cross-env": "^7.0.0",
-    "electron": "^18.3.5",
+    "electron": "^22.3.0",
     "electron-builder": "^22.14.13",
     "typescript": "^5.6.2",
     "vite": "^5.4.8",
@@ -64,8 +74,8 @@
     "@mui/material": "^6.1.1",
     "@mui/system": "^6.1.1",
     "@mui/x-date-pickers": "^7.18.0",
+    "dayjs": "^1.10.7",
     "html2pdf.js": "^0.10.2",
-    "moment": "^2.30.1",
     "number-to-words": "^1.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -23,7 +23,8 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
   const { clientDetails, productDetails, discount } = invoiceData;
   const [discountedRate, setDiscountedRate] = useState(0);
   const [total, setTotal] = useState(0);
-
+  const nonDiscountTotalValue = 0;
+  const nonDiscountItemCount = 0;
   const getAmount = (qnty, amount) => {
     return Number(qnty) * Number(amount);
   };
@@ -129,12 +130,12 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
             <Grid container spacing={2} justifyContent="center">
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Typography>
                   <strong>Phone No:</strong> 9842972802
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Typography>
                   <strong>Mobile No:</strong> 7806999169
                 </Typography>
@@ -180,12 +181,12 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
 
               <Grid item xs={3}>
                 <Grid container>
-                  <Grid item xs={3}>
+                  <Grid item xs={4}>
                     <Typography>
                       <strong>Mobile No</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={8}>
                     <Typography>{`: ${clientDetails?.mobile}`}</Typography>
                   </Grid>
                 </Grid>
@@ -193,7 +194,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
 
               <Grid item xs={3}>
                 <Grid container spacing={0}>
-                  <Grid item xs={4}>
+                  <Grid item xs={5}>
                     <Typography>
                       <strong>Estimate No</strong>
                     </Typography>
@@ -493,7 +494,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
           <span style={{ color: "red" }}>*</span> This Symbol Notifies
           Non-Discount (Net-Rate) Items.
         </Typography>
-        <Box p={2}>
+        {/* <Box p={2}>
           <Grid container>
             <Grid item xs={8}>
               <Grid container spacing={1}>
@@ -525,14 +526,77 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                 </Grid>
                 <Grid item xs={1} sx={{ paddingLeft: "0 !important" }}>
                   <Typography
-                    pl={2}
                     sx={{
                       borderBottom: "1px solid #000",
-                      width: "80px",
+                      width: "90px",
                       textAlign: "right",
+                      pr:1
                     }}
                   >
                     <strong>.00</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography>
+                    <strong>Total Items And Value</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                  <Typography pl={2}>
+                    <strong>{productDetails.length}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                  <Typography sx={{ textAlign: "right" }}>
+                    <strong>{Number(total).toFixed(2)}</strong>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Box> */}
+        <Box p={2}>
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Typography>
+                    <strong>Total No. Of Discount Items</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                  <Typography pl={2}>
+                    <strong>{productDetails.length}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                  <Typography sx={{ textAlign: "right" }}>
+                    <strong>{Number(total).toFixed(2)}</strong>
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Typography>
+                    <strong>Total No. Of Non-Discount [Net-Rate] Items</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                  <Typography pl={2} sx={{ borderBottom: "1px solid #000" }}>
+                    <strong>{nonDiscountItemCount || 0}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={1} sx={{ paddingLeft: "0 !important" }}>
+                  <Typography
+                    sx={{
+                      borderBottom: "1px solid #000",
+                      width: "90px",
+                      textAlign: "right",
+                      pr: Number(total) < 1000 ? 3 : Number(total) > 1000 && Number(total) < 100000 ? 2 : 0,
+                    }}
+                  >
+                    <strong>
+                      {nonDiscountTotalValue?.toFixed(2) || ".00"}
+                    </strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>

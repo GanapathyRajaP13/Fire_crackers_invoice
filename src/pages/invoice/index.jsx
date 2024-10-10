@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import InvoiceForm from "../../components/invoiceForm";
-import InvoicePreview from "../../components/invoicePreview";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+
+const InvoiceForm = lazy(() => import("../../components/invoiceForm"));
+const InvoicePreview = lazy(() => import("../../components/invoicePreview"));
 
 const Invoice = () => {
   const [invoiceData, setInvoiceData] = useState([]);
@@ -30,12 +31,14 @@ const Invoice = () => {
 
   return (
     <div>
-      {!isSubmitted && (
-        <InvoiceForm onSubmit={handleSubmit} invoiceData={invoiceData} />
-      )}
-      {isSubmitted && (
-        <InvoicePreview invoiceData={invoiceData} handleBack={handleBack} />
-      )}
+      <Suspense fallback={<div>Loading...</div>}>
+        {!isSubmitted && (
+          <InvoiceForm onSubmit={handleSubmit} invoiceData={invoiceData} />
+        )}
+        {isSubmitted && (
+          <InvoicePreview invoiceData={invoiceData} handleBack={handleBack} />
+        )}
+      </Suspense>
     </div>
   );
 };

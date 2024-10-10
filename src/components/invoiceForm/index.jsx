@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import moment from "moment";
+import dayjs from "dayjs";
 import React, { useEffect, useRef, useState } from "react";
-import background from "../../../public/Crackers.png";
+import background from "../../assets/Crackers.png";
 import { CrackersPriceList } from "../../crackersPriceList";
 import { inputFieldStyle } from "./style";
 
@@ -31,7 +31,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
   const [estimateDate, setEstimateDate] = useState(
     invoiceData?.length === 0
       ? null
-      : moment(invoiceData?.clientDetails?.date).toDate()
+      : dayjs(invoiceData?.clientDetails?.date).toDate()
   );
   const [estimateNo, setEstimateNo] = useState(
     invoiceData?.clientDetails?.estimateNo ?? ""
@@ -88,7 +88,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     setMobileNo("");
     setEstimateDate(null);
     setEstimateNo("");
-    setDiscount("");
+    setDiscount(0);
     setItems([{ selectedCracker: "", quantity: 1 }]);
     setErrors({});
     quantityRefs.current = [];
@@ -118,7 +118,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
         city,
         mobile: mobileNo,
         estimateNo,
-        date: moment(estimateDate).format("DD-MM-YYYY"),
+        date: dayjs(estimateDate).format("DD-MM-YYYY"),
       },
       productDetails,
       discount,

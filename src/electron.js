@@ -7,27 +7,32 @@ const createWindow = () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   mainWindow = new BrowserWindow({
-    width: width,
-    height: height,
+    width: Math.min(1280, width),
+    height: Math.min(720, height),
+    minWidth: 800,
+    minHeight: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
     },
-    icon: path.join(__dirname, "../dist/Firecrackers.png"),
+    icon: path.join(__dirname, "../public/Firecrackers.ico"),
   });
 
   const isDev = !app.isPackaged;
 
   if (isDev) {
-    mainWindow.loadURL("http://localhost:5173");
+    mainWindow
+      .loadURL("http://localhost:5173")
+      .then(() => mainWindow.webContents.openDevTools())
+      .catch((err) => console.error("Failed to load localhost:", err));
   } else {
     mainWindow
       .loadFile(path.join(__dirname, "../dist/index.html"))
-      .catch((err) => {
-        console.error("Failed to load index.html:", err);
-      });
+      .catch((err) => console.error("Failed to load index.html:", err));
   }
+
+  mainWindow.setMenu(null);
 
   mainWindow.on("closed", () => {
     mainWindow = null;
