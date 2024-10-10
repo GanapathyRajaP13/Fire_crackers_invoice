@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Chip,
   Container,
   Grid,
   InputLabel,
@@ -49,9 +50,13 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
   );
   const [errors, setErrors] = useState({});
 
+  const [mobileNumbers, setMobileNumbers] = useState(invoiceData?.mobileNumbers ?? []);
+  const [mobileNoSet, setMobileNoSet] = useState("");
+
   const validateForm = () => {
     const newErrors = {};
-
+    if (mobileNumbers.length < 1)
+      newErrors.mobileNumbers = "Add atleat one mobile number";
     if (!clientName) newErrors.clientName = "Client Name is required";
     if (!city) newErrors.city = "City is required";
     if (!mobileNo.match(/^\d{10}$/))
@@ -122,6 +127,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
       },
       productDetails,
       discount,
+      mobileNumbers,
     };
 
     onSubmit(formattedData, true);
@@ -180,6 +186,14 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     }));
   };
 
+  const handleSaveMobileSet = (value) => {
+    setMobileNoSet(value);
+    setErrors((prev) => ({
+      ...prev,
+      mobileNoSet: value.length <= 10 ? "" : "Mobile number must be 10 digits",
+    }));
+  };
+
   const handleEstimateNoChange = (e) => {
     setEstimateNo(e.target.value);
   };
@@ -213,6 +227,45 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
       e.preventDefault();
       e.target.value !== "" && handleAddItem();
     }
+  };
+
+  const handleEnterMobileSet = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddMobileNumber();
+    }
+  };
+
+  const handleAddMobileNumber = () => {
+    if (!mobileNoSet.match(/^\d{10}$/)) {
+      setErrors((prev) => ({
+        ...prev,
+        mobileNoSet: "Mobile number must be 10 digits",
+      }));
+      return;
+    }
+    console.log(mobileNumbers.length, "lllllllllllllllll");
+    if (mobileNumbers.length >= 5) {
+      setErrors((prev) => ({
+        ...prev,
+        mobileNoSet: null,
+        mobileNumbers: "You can only add up to 5 mobile numbers.",
+      }));
+      return;
+    }
+
+    setMobileNumbers([...mobileNumbers, mobileNoSet]);
+    setMobileNoSet("");
+    setErrors((prev) => ({
+      ...prev,
+      mobileNoSet: "",
+      mobileNumbers: "",
+    }));
+  };
+
+  const handleRemoveMobileNumber = (index) => {
+    const newMobileNumbers = mobileNumbers.filter((_, i) => i !== index);
+    setMobileNumbers(newMobileNumbers);
   };
 
   return (
@@ -393,6 +446,55 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
               </Typography>
             )}
           </Grid>
+
+          <Grid item xs={3}>
+            <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
+              Mobile No {<span>*</span>}
+            </InputLabel>
+            <TextField
+              placeholder="Enter mobile number"
+              type="number"
+              value={mobileNoSet}
+              onChange={(e) => handleSaveMobileSet(e.target.value)}
+              onKeyDown={(e) => handleEnterMobileSet(e)}
+              error={!!errors.mobileNoSet}
+              fullWidth
+              sx={{
+                ...inputFieldStyle.textFieldSx,
+                '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                  {
+                    "-webkit-appearance": "none",
+                    margin: 0,
+                  },
+              }}
+            />
+            {(errors.mobileNoSet || errors.mobileNumbers) && (
+              <Typography color="error" sx={{ fontSize: "12px" }}>
+                {errors.mobileNoSet ?? errors.mobileNumbers}
+              </Typography>
+            )}
+          </Grid>
+
+          {/* Display the list of mobile numbers */}
+          {mobileNumbers.length > 0 && (
+            <Grid item xs={9}>
+              <Typography sx={{ fontSize: "12px", color: "#5F5F5F" }}>
+                Mobile Numbers:
+              </Typography>
+              <Box>
+                {mobileNumbers.map((number, index) => (
+                  <Chip
+                    key={index}
+                    label={number}
+                    onDelete={() => handleRemoveMobileNumber(index)}
+                    color="gray"
+                    variant="outlined"
+                    sx={{ marginBottom: "10px", marginRight: "10px" }}
+                  />
+                ))}
+              </Box>
+            </Grid>
+          )}
 
           <Grid item xs={12}>
             <Grid container spacing={0} pt={2}>

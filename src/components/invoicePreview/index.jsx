@@ -20,7 +20,8 @@ import "./style.css";
 
 const InvoicePreview = ({ invoiceData, handleBack }) => {
   const componentRef = useRef(null);
-  const { clientDetails, productDetails, discount } = invoiceData;
+  const { clientDetails, productDetails, discount, mobileNumbers } =
+    invoiceData;
   const [discountedRate, setDiscountedRate] = useState(0);
   const [total, setTotal] = useState(0);
   const nonDiscountTotalValue = 0;
@@ -129,17 +130,26 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             <Typography variant="h6">
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
-            <Grid container spacing={2} justifyContent="center">
-              <Grid item xs={3}>
+            <Grid
+              container
+              spacing={0}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Grid item xs={1}>
                 <Typography>
-                  <strong>Phone No:</strong> 9842972802
+                  <strong>Phone No:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
-                <Typography>
-                  <strong>Mobile No:</strong> 7806999169
-                </Typography>
-              </Grid>
+
+              {mobileNumbers.map((number, index) => (
+                <Grid item xs={1} key={index}>
+                  <Typography>
+                    {number}
+                    {index < mobileNumbers.length - 1 && ","}
+                  </Typography>
+                </Grid>
+              ))}
             </Grid>
           </Box>
         </Box>
@@ -591,7 +601,12 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                       borderBottom: "1px solid #000",
                       width: "90px",
                       textAlign: "right",
-                      pr: Number(total) < 1000 ? 3 : Number(total) > 1000 && Number(total) < 100000 ? 2 : 0,
+                      pr:
+                        Number(total) < 1000
+                          ? 3
+                          : Number(total) > 1000 && Number(total) < 100000
+                          ? 2
+                          : 0,
                     }}
                   >
                     <strong>

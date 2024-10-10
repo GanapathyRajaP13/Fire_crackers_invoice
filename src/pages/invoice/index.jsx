@@ -18,15 +18,7 @@ const Invoice = () => {
   };
 
   useEffect(() => {
-    const savedItems = localStorage.getItem("items");
-    if (savedItems) {
-      try {
-        setInvoiceData(JSON.parse(savedItems));
-      } catch (error) {
-        console.error("Failed to parse saved items:", error);
-        setInvoiceData([]);
-      }
-    }
+    localStorage.clear();
   }, []);
 
   return (
