@@ -452,7 +452,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
 
           <Grid item xs={3}>
             <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
-              Mobile No {<span>*</span>}
+              Add shop contact mobile {<span>*</span>}
             </InputLabel>
             <Tooltip title="Enter 10 digit mobile number and press enter" arrow>
               <TextField
