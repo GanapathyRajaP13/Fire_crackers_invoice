@@ -695,26 +695,31 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                   </Grid>
 
                   <Grid item xs={2}>
-                    <TextField
-                      label="Quantity"
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleItemChange(index, "quantity", e.target.value)
-                      }
-                      inputRef={(el) => (quantityRefs.current[index] = el)}
-                      onKeyDown={(e) => handleEnterQuantity(e)}
-                      fullWidth
-                      error={!!errors[`items.${index}.quantity`]}
-                      sx={{
-                        ...inputFieldStyle.textFieldSx,
-                        '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
-                          {
-                            "-webkit-appearance": "none",
-                            margin: 0,
-                          },
-                      }}
-                    />
+                    <Tooltip
+                      title="Press enter to add new product"
+                      arrow
+                    >
+                      <TextField
+                        label="Quantity"
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleItemChange(index, "quantity", e.target.value)
+                        }
+                        inputRef={(el) => (quantityRefs.current[index] = el)}
+                        onKeyDown={(e) => handleEnterQuantity(e)}
+                        fullWidth
+                        error={!!errors[`items.${index}.quantity`]}
+                        sx={{
+                          ...inputFieldStyle.textFieldSx,
+                          '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                            {
+                              "-webkit-appearance": "none",
+                              margin: 0,
+                            },
+                        }}
+                      />
+                    </Tooltip>
                     {!!errors[`items.${index}.quantity`] && (
                       <Typography
                         color="error"
