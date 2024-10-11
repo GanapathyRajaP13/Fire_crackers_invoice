@@ -7,10 +7,8 @@
   "main": "src/electron.js",
   "scripts": {
     "dev": "vite",
-    "build": "node --max_old_space_size=4096 node_modules/vite/bin/vite.js build --mode production",
-    "serve": "vite preview",
-    "electron:serve": "vite build && electron src/electron.js",
-    "electron:package": "electron-builder --dir",
+    "build": "vite build --mode production && webpack --config webpack.main.config.js",
+    "electron:serve": "vite build && electron dist/electron.js",
     "electron:build": "npm run build && electron-builder"
   },
   "build": {
@@ -22,6 +20,7 @@
       "src/electron.js",
       "!node_modules/{unused-module-1,unused-module-2}",
       "!**/*.map",
+      "!devDependencies",
       "!node_modules/electron/dist/locales/**"
     ],
     "directories": {
@@ -67,6 +66,8 @@
     "wait-on": "^5.0.0"
   },
   "dependencies": {
+    "@babel/core": "^7.25.8",
+    "@babel/preset-env": "^7.25.8",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.9.0",
@@ -74,12 +75,17 @@
     "@mui/material": "^6.1.1",
     "@mui/system": "^6.1.1",
     "@mui/x-date-pickers": "^7.18.0",
+    "babel-loader": "^9.2.1",
     "dayjs": "^1.10.7",
     "html2pdf.js": "^0.10.2",
     "number-to-words": "^1.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-merge": "^6.0.1",
+    "webpack-node-externals": "^3.0.0",
     "zod": "^3.23.8"
   }
 }
