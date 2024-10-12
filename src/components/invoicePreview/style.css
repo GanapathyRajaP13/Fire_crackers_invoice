@@ -1,20 +1,17 @@
-/* Add this to your CSS file or in a <style> tag in your component */
 @media print {
     body {
-      font-size: 12pt; /* Adjust this value to make fonts smaller for print */
+      font-size: 15pt;
     }
   
     .MuiTypography-root {
-      font-size: 12pt !important; /* Ensure the font size is consistent */
+      font-size: 15pt !important;
     }
-  
-    /* Additional styles to ensure layout fits on the page */
+
     .your-custom-class {
-      margin: 0; /* Reset margins if needed */
-      padding: 0; /* Reset padding if needed */
+      margin: 0;
+      padding: 0;
     }
   
-    /* Hide any non-print elements */
     .no-print {
       display: none; 
     }

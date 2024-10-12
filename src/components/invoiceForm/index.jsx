@@ -247,7 +247,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
       }));
       return;
     }
-    console.log(mobileNumbers.length, "lllllllllllllllll");
+
     if (mobileNumbers.length >= 5) {
       setErrors((prev) => ({
         ...prev,
@@ -695,10 +695,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                   </Grid>
 
                   <Grid item xs={2}>
-                    <Tooltip
-                      title="Press enter to add new product"
-                      arrow
-                    >
+                    <Tooltip title="Press enter to add new product" arrow>
                       <TextField
                         label="Quantity"
                         type="number"

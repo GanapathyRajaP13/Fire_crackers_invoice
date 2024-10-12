@@ -47,10 +47,11 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
 
   const handleDownloadPDF = () => {
     const input = componentRef.current;
+
     html2canvas(input, { scale: 3 }).then((canvas) => {
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const pdfHeight = pdf.internal.pageSize.getHeight() - 2;
       const imgData = canvas.toDataURL("image/jpeg", 2);
       const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -122,12 +123,13 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               border: "1px solid #000",
               borderBottom: "none",
               textAlign: "center",
+              fontSize: "20px",
             }}
           >
             ESTIMATE - RETAIL
           </Typography>
           <Box sx={{ border: "1px solid #000", textAlign: "center" }}>
-            <Typography variant="h6">
+            <Typography sx={{ fontSize: "25px" }}>
               <strong>SIVAKASI CRACKERS</strong>
             </Typography>
             <Grid
@@ -137,14 +139,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               alignItems="center"
             >
               <Grid item xs={1}>
-                <Typography>
+                <Typography sx={{ fontSize: "18px" }}>
                   <strong>Phone No:</strong>
                 </Typography>
               </Grid>
 
               {mobileNumbers.map((number, index) => (
                 <Grid item xs={1} key={index}>
-                  <Typography>
+                  <Typography sx={{ fontSize: "18px" }}>
                     {number}
                     {index < mobileNumbers.length - 1 && ","}
                   </Typography>
@@ -166,12 +168,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <Grid item xs={3}>
                 <Grid container>
                   <Grid item xs={4}>
-                    <Typography>
+                    <Typography sx={{ fontSize: "18px" }}>
                       <strong>Estimate To</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={8}>
-                    <Typography>{`: ${clientDetails?.name}`}</Typography>
+                    <Typography
+                      sx={{ fontSize: "18px" }}
+                    >{`: ${clientDetails?.name}`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -179,12 +183,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <Grid item xs={2}>
                 <Grid container>
                   <Grid item xs={2}>
-                    <Typography>
+                    <Typography sx={{ fontSize: "18px" }}>
                       <strong>City</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={10}>
-                    <Typography>{`: ${clientDetails?.city}`}</Typography>
+                    <Typography
+                      sx={{ fontSize: "18px" }}
+                    >{`: ${clientDetails?.city}`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -192,12 +198,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <Grid item xs={3}>
                 <Grid container>
                   <Grid item xs={4}>
-                    <Typography>
+                    <Typography sx={{ fontSize: "18px" }}>
                       <strong>Mobile No</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={8}>
-                    <Typography>{`: ${clientDetails?.mobile}`}</Typography>
+                    <Typography
+                      sx={{ fontSize: "18px" }}
+                    >{`: ${clientDetails?.mobile}`}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -205,12 +213,12 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               <Grid item xs={3}>
                 <Grid container spacing={0}>
                   <Grid item xs={5}>
-                    <Typography>
+                    <Typography sx={{ fontSize: "18px" }}>
                       <strong>Estimate No</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={7}>
-                    <Typography>
+                    <Typography sx={{ fontSize: "18px" }}>
                       {clientDetails?.estimateNo
                         ? `: ${clientDetails?.estimateNo} / ${clientDetails?.date}`
                         : `: ${clientDetails?.date}`}
@@ -236,6 +244,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     fontWeight: "bold",
                     textAlign: "center",
                     border: "1px solid #000",
+                    fontSize: "18px",
                   }}
                 >
                   S.No
@@ -245,6 +254,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     fontWeight: "bold",
                     textAlign: "center",
                     border: "1px solid #000",
+                    fontSize: "18px",
                   }}
                 >
                   Product Name
@@ -254,6 +264,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     fontWeight: "bold",
                     textAlign: "center",
                     border: "1px solid #000",
+                    fontSize: "18px",
                   }}
                 >
                   Quantity
@@ -263,6 +274,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     fontWeight: "bold",
                     textAlign: "center",
                     border: "1px solid #000",
+                    fontSize: "18px",
                   }}
                 >
                   Unit
@@ -272,6 +284,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     fontWeight: "bold",
                     textAlign: "center",
                     border: "1px solid #000",
+                    fontSize: "18px",
                   }}
                 >
                   Rate / unit (₹)
@@ -281,6 +294,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                     fontWeight: "bold",
                     textAlign: "center",
                     border: "1px solid #000",
+                    fontSize: "18px",
                   }}
                 >
                   Amount (₹)
@@ -291,30 +305,52 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               {productDetails?.map((product, index) => (
                 <TableRow key={product.id}>
                   <TableCell
-                    sx={{ border: "1px solid #000", textAlign: "center" }}
+                    sx={{
+                      border: "1px solid #000",
+                      textAlign: "center",
+                      fontSize: "18px",
+                    }}
                   >
                     {index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #000" }}>
+                  <TableCell
+                    sx={{ border: "1px solid #000", fontSize: "18px" }}
+                  >
                     {product.name}
                   </TableCell>
                   <TableCell
-                    sx={{ border: "1px solid #000", textAlign: "right" }}
+                    sx={{
+                      border: "1px solid #000",
+                      textAlign: "right",
+                      fontSize: "18px",
+                    }}
                   >
                     {product.quantity}
                   </TableCell>
                   <TableCell
-                    sx={{ border: "1px solid #000", textAlign: "center" }}
+                    sx={{
+                      border: "1px solid #000",
+                      textAlign: "center",
+                      fontSize: "18px",
+                    }}
                   >
                     {product.unit}
                   </TableCell>
                   <TableCell
-                    sx={{ border: "1px solid #000", textAlign: "right" }}
+                    sx={{
+                      border: "1px solid #000",
+                      textAlign: "right",
+                      fontSize: "18px",
+                    }}
                   >
                     {product.rate.toFixed(2)}
                   </TableCell>
                   <TableCell
-                    sx={{ border: "1px solid #000", textAlign: "right" }}
+                    sx={{
+                      border: "1px solid #000",
+                      textAlign: "right",
+                      fontSize: "18px",
+                    }}
                   >
                     {getAmount(product.quantity, product.rate).toFixed(2)}
                   </TableCell>
@@ -332,7 +368,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
         >
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Typography m={2}>
+              <Typography m={2} sx={{ fontSize: "18px" }}>
                 <strong>
                   Goods once Sold Can't be Taken Back (or) Exchanged.
                 </strong>
@@ -348,6 +384,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderRight: "1px solid #000",
                           borderLeft: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>Goods Value</strong>
@@ -356,9 +393,13 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       ></TableCell>
-                      <TableCell align="right" sx={{ borderBottom: "none" }}>
+                      <TableCell
+                        align="right"
+                        sx={{ borderBottom: "none", fontSize: "18px" }}
+                      >
                         <strong>₹{total.toFixed(2)}</strong>
                       </TableCell>
                     </TableRow>
@@ -368,6 +409,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderRight: "1px solid #000",
                           borderBottom: "none",
                           borderLeft: "1px solid #000",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>Discount %</strong>
@@ -377,11 +419,15 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>{Number(discount).toFixed(2)}</strong>
                       </TableCell>
-                      <TableCell align="right" sx={{ borderBottom: "none" }}>
+                      <TableCell
+                        align="right"
+                        sx={{ borderBottom: "none", fontSize: "18px" }}
+                      >
                         ₹{discountedRate}
                       </TableCell>
                     </TableRow>
@@ -391,6 +437,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderRight: "1px solid #000",
                           borderBottom: "none",
                           borderLeft: "1px solid #000",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>Sub-Total</strong>
@@ -399,6 +446,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       ></TableCell>
                       <TableCell
@@ -406,6 +454,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderTop: "1px solid #000",
                           borderBottom: "1px solid #000",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>₹{discountedRate}</strong>
@@ -417,6 +466,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderRight: "1px solid #000",
                           borderBottom: "none",
                           borderLeft: "1px solid #000",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>Tax %</strong>
@@ -426,11 +476,15 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       >
                         .00
                       </TableCell>
-                      <TableCell align="right" sx={{ borderBottom: "none" }}>
+                      <TableCell
+                        align="right"
+                        sx={{ borderBottom: "none", fontSize: "18px" }}
+                      >
                         .00
                       </TableCell>
                     </TableRow>
@@ -440,6 +494,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderRight: "1px solid #000",
                           borderBottom: "none",
                           borderLeft: "1px solid #000",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>Packing %</strong>
@@ -449,11 +504,15 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       >
                         .00
                       </TableCell>
-                      <TableCell align="right" sx={{ borderBottom: "none" }}>
+                      <TableCell
+                        align="right"
+                        sx={{ borderBottom: "none", fontSize: "18px" }}
+                      >
                         .00
                       </TableCell>
                     </TableRow>
@@ -463,6 +522,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                           borderRight: "1px solid #000",
                           borderBottom: "none",
                           borderLeft: "1px solid #000",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>Net Amount</strong>
@@ -471,12 +531,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                         sx={{
                           borderRight: "1px solid #000",
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       ></TableCell>
                       <TableCell
                         align="right"
                         sx={{
                           borderBottom: "none",
+                          fontSize: "18px",
                         }}
                       >
                         <strong>₹{discountedRate}</strong>
@@ -495,14 +557,14 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             borderTop: "none",
           }}
         >
-          <Typography ml={2}>
+          <Typography ml={2} sx={{ fontSize: "18px" }}>
             <strong>Rupees in words:</strong> {numberInWords}
           </Typography>
         </Box>
 
         <Typography mt={2}>
-          <span style={{ color: "red" }}>*</span> This Symbol Notifies
-          Non-Discount (Net-Rate) Items.
+          <span style={{ color: "red", fontSize: "18px" }}>*</span> This Symbol
+          Notifies Non-Discount (Net-Rate) Items.
         </Typography>
         {/* <Box p={2}>
           <Grid container>
@@ -570,37 +632,45 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
             <Grid item xs={8}>
               <Grid container spacing={1}>
                 <Grid item xs={6}>
-                  <Typography>
+                  <Typography sx={{ fontSize: "18px" }}>
                     <strong>Total No. Of Discount Items</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Typography pl={2}>
+                  <Typography pl={2} sx={{ fontSize: "18px" }}>
                     <strong>{productDetails.length}</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Typography sx={{ textAlign: "right" }}>
+                  <Typography sx={{ textAlign: "right", fontSize: "18px" }}>
                     <strong>{Number(total).toFixed(2)}</strong>
                   </Typography>
                 </Grid>
 
                 <Grid item xs={6}>
-                  <Typography>
+                  <Typography sx={{ fontSize: "18px" }}>
                     <strong>Total No. Of Non-Discount [Net-Rate] Items</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Typography pl={2} sx={{ borderBottom: "1px solid #000" }}>
+                  <Typography
+                    pl={2}
+                    sx={{ borderBottom: "1px solid #000", fontSize: "18px" }}
+                  >
                     <strong>{nonDiscountItemCount || 0}</strong>
                   </Typography>
                 </Grid>
-                <Grid item xs={1} sx={{ paddingLeft: "0 !important" }}>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{ paddingLeft: "0 !important", fontSize: "18px" }}
+                >
                   <Typography
                     sx={{
                       borderBottom: "1px solid #000",
                       width: "90px",
                       textAlign: "right",
+                      fontSize: "18px",
                       pr:
                         Number(total) < 1000
                           ? 3
@@ -615,17 +685,17 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography>
+                  <Typography sx={{ fontSize: "18px" }}>
                     <strong>Total Items And Value</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Typography pl={2}>
+                  <Typography pl={2} sx={{ fontSize: "18px" }}>
                     <strong>{productDetails.length}</strong>
                   </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Typography sx={{ textAlign: "right" }}>
+                  <Typography sx={{ textAlign: "right", fontSize: "18px" }}>
                     <strong>{Number(total).toFixed(2)}</strong>
                   </Typography>
                 </Grid>
