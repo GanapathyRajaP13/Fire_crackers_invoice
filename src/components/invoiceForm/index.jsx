@@ -10,6 +10,8 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Paper,
@@ -20,6 +22,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import AddIcon from "@mui/icons-material/Add";
 import { useSelector, useDispatch } from "react-redux";
 import { productUpdate } from "../../store/slice";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -350,6 +353,10 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     }
   };
 
+  const handleAddClick = () => {
+    handleAddMobileNumber();
+  };
+
   const handleEnterMobileSet = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -395,16 +402,16 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
         mt: 2,
         borderRadius: "8px",
         bgcolor: "#eee",
-        p: 2,
+        p: 1,
         boxShadow: "10px 10px 5px #cfcfcf",
       }}
     >
       <Box
         sx={{
-          padding: "20px",
+          padding: "10px",
           backgroundColor: "#adb4b9",
           mb: 2,
-          mt: 1,
+          mt: 0,
           backgroundImage: `url(${background})`,
           backgroundPosition: "right",
           backgroundRepeat: "no-repeat",
@@ -568,7 +575,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
             )}
           </Grid>
 
-          <Grid item xs={3}>
+          <Grid item xs={6} sm={3}>
             <InputLabel sx={{ ...inputFieldStyle.labelStyle }}>
               Add shop contact mobile {<span>*</span>}
             </InputLabel>
@@ -581,6 +588,26 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                 onKeyDown={(e) => handleEnterMobileSet(e)}
                 error={!!errors.mobileNoSet}
                 fullWidth
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{
+                        padding: 0,
+                      }}
+                    >
+                      <IconButton
+                        sx={{
+                          padding: 0,
+                          margin: 0,
+                        }}
+                        onClick={handleAddClick}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 sx={{
                   ...inputFieldStyle.textFieldSx,
                   '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
@@ -620,7 +647,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
           )}
 
           <Grid item xs={12}>
-            <Grid container spacing={0} pt={2}>
+            <Grid container spacing={0}>
               <Grid item xs={2}>
                 <Typography variant="h6">Product Items</Typography>
               </Grid>
@@ -629,9 +656,10 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
             <Box
               ref={boxRef}
               sx={{
-                maxHeight: "200px",
+                width: "100%",
+                maxHeight: { xs: "400px", sm: "200px" },
                 overflowY: "auto",
-                overflowX: "hidden",
+                overflowX: "auto",
                 border: "1px solid black",
                 p: 1,
                 boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
@@ -644,9 +672,9 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                   container
                   spacing={1}
                   key={index}
-                  sx={{ marginTop: "2px" }}
+                  sx={{ marginTop: "2px", minWidth: "600px" }}
                 >
-                  <Grid item xs={2}>
+                  <Grid item xs={2} sm={2}>
                     <Autocomplete
                       options={productList}
                       getOptionLabel={(option) => option.id.toString()}
@@ -724,7 +752,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={3}>
+                  <Grid item xs={3} sm={3}>
                     <Autocomplete
                       options={productList}
                       getOptionLabel={(option) => {
@@ -1024,7 +1052,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={2}>
+                  <Grid item xs={2} sm={2}>
                     <Tooltip title="Press enter to add new product" arrow>
                       <TextField
                         label="Quantity"
@@ -1058,7 +1086,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                     )}
                   </Grid>
 
-                  <Grid item xs={2}>
+                  <Grid item xs={2} sm={2}>
                     <TextField
                       label="Rate"
                       value={
@@ -1103,7 +1131,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                       variant="outlined"
                       color="secondary"
                       onClick={() => handleRemoveItem(index)}
-                      sx={{ fontWeight: "bold", width: "80px" }}
+                      sx={{ fontWeight: "bold" }}
                       disabled={items.length === 1}
                     >
                       Remove
@@ -1114,12 +1142,12 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
             </Box>
           </Grid>
 
-          <Grid item xs={1}>
+          <Grid item xs={3} sm={1}>
             <Button variant="contained" color="primary" type="submit">
               Submit
             </Button>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={3} sm={1}>
             <Button variant="contained" color="primary" onClick={clearForm}>
               Clear
             </Button>

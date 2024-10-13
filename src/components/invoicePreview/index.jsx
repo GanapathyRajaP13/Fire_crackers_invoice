@@ -145,10 +145,10 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
               </Grid>
 
               {mobileNumbers.map((number, index) => (
-                <Grid item xs={1} key={index}>
+                <Grid item key={index}>
                   <Typography sx={{ fontSize: "18px" }}>
                     {number}
-                    {index < mobileNumbers.length - 1 && ","}
+                    {index < mobileNumbers.length - 1 && ", "}
                   </Typography>
                 </Grid>
               ))}
