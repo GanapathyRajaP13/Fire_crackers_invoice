@@ -25,10 +25,12 @@ import { productUpdate } from "../../store/slice";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect, useRef, useState } from "react";
 import background from "../../assets/Crackers.png";
 import { inputFieldStyle } from "./style";
 
+dayjs.extend(customParseFormat);
 const filter = createFilterOptions();
 
 const StyledOption = styled("li")(({ theme, primary }) => ({
@@ -59,7 +61,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
   const [estimateDate, setEstimateDate] = useState(
     invoiceData?.length === 0
       ? null
-      : dayjs(invoiceData?.clientDetails?.date).toDate()
+      : dayjs(invoiceData?.clientDetails?.date, "DD-MM-YYYY").toDate()
   );
   const [estimateNo, setEstimateNo] = useState(
     invoiceData?.clientDetails?.estimateNo ?? ""
@@ -117,7 +119,8 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
   const validateForm = () => {
     const newErrors = {};
     if (mobileNumbers.length < 1)
-      newErrors.mobileNumbers = "Press Enter after mobile number";
+      newErrors.mobileNumbers =
+        "Press Enter after entering your mobile number.";
     if (!clientName) newErrors.clientName = "Client Name is required";
     if (!city) newErrors.city = "City is required";
     if (!mobileNo.match(/^\d{10}$/))
