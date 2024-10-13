@@ -1,4 +1,5 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import { LinearProgress } from "@mui/material";
+import React, { useState, lazy, Suspense } from "react";
 
 const InvoiceForm = lazy(() => import("../../components/invoiceForm"));
 const InvoicePreview = lazy(() => import("../../components/invoicePreview"));
@@ -9,7 +10,6 @@ const Invoice = () => {
 
   const handleSubmit = (data, bool) => {
     setInvoiceData(data);
-    localStorage.setItem("items", JSON.stringify(data));
     setIsSubmitted(bool);
   };
 
@@ -17,13 +17,9 @@ const Invoice = () => {
     setIsSubmitted(false);
   };
 
-  useEffect(() => {
-    localStorage.clear();
-  }, []);
-
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LinearProgress />}>
         {!isSubmitted && (
           <InvoiceForm onSubmit={handleSubmit} invoiceData={invoiceData} />
         )}

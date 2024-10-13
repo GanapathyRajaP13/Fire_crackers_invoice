@@ -51,7 +51,7 @@ const InvoicePreview = ({ invoiceData, handleBack }) => {
     html2canvas(input, { scale: 3 }).then((canvas) => {
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight() - 2;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgData = canvas.toDataURL("image/jpeg", 2);
       const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;

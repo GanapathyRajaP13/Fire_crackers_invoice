@@ -4,22 +4,48 @@ import {
   Button,
   Chip,
   Container,
+  createFilterOptions,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   InputLabel,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
+import { styled } from "@mui/system";
+import { useSelector, useDispatch } from "react-redux";
+import { productUpdate } from "../../store/slice";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import dayjs from "dayjs";
 import React, { useEffect, useRef, useState } from "react";
 import background from "../../assets/Crackers.png";
-import { CrackersPriceList } from "../../crackersPriceList";
 import { inputFieldStyle } from "./style";
 
+const filter = createFilterOptions();
+
+const StyledOption = styled("li")(({ theme, primary }) => ({
+  backgroundColor: primary ? theme.palette.primary.main : "transparent",
+  color: theme.palette.text.primary,
+  padding: "8px 12px",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+    color: theme.palette.text.primary,
+  },
+}));
+
 const InvoiceForm = ({ onSubmit, invoiceData }) => {
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const productList = useSelector((state) => state.product.productList);
   const boxRef = useRef(null);
   const quantityRefs = useRef([]);
   const selectRef = useRef([]);
@@ -55,11 +81,43 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     invoiceData?.mobileNumbers ?? []
   );
   const [mobileNoSet, setMobileNoSet] = useState("");
+  const [open, toggleOpen] = React.useState(false);
+  const [dialogValue, setDialogValue] = React.useState({
+    name: "",
+    unit: "",
+    rate: "",
+  });
+  const [dialogValueError, setDialogValueError] = React.useState({
+    name: "",
+    unit: "",
+    rate: "",
+  });
+
+  const handleChangeNewProduct = (event) => {
+    const { name, value } = event.target;
+    setDialogValue((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setDialogValueError((prevState) => ({
+      ...prevState,
+      [name]: "",
+    }));
+  };
+
+  const handleClose = () => {
+    setDialogValue({
+      name: "",
+      unit: "",
+      rate: "",
+    });
+    toggleOpen(false);
+  };
 
   const validateForm = () => {
     const newErrors = {};
     if (mobileNumbers.length < 1)
-      newErrors.mobileNumbers = "Add atleat one mobile number";
+      newErrors.mobileNumbers = "Press Enter after mobile number";
     if (!clientName) newErrors.clientName = "Client Name is required";
     if (!city) newErrors.city = "City is required";
     if (!mobileNo.match(/^\d{10}$/))
@@ -88,8 +146,67 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     }
   }, [items]);
 
+  const handleProductListSubmit = (index) => {
+    let validate = true;
+
+    if (!dialogValue.name) {
+      validate = false;
+      setDialogValueError((prevState) => ({
+        ...prevState,
+        name: "Product name is required",
+      }));
+    } else {
+      const isExist = productList.some(
+        (item) =>
+          item.name.trim().toLowerCase() ===
+          dialogValue.name.trim().toLowerCase()
+      );
+      if (isExist) {
+        validate = false;
+        setDialogValueError((prevState) => ({
+          ...prevState,
+          name: "Product name already exists",
+        }));
+      } else {
+        setDialogValueError((prevState) => ({
+          ...prevState,
+          name: "",
+        }));
+      }
+    }
+
+    if (!dialogValue.unit) {
+      validate = false;
+      setDialogValueError((prevState) => ({
+        ...prevState,
+        unit: "Product unit is required",
+      }));
+    }
+
+    if (!dialogValue.rate) {
+      validate = false;
+      setDialogValueError((prevState) => ({
+        ...prevState,
+        rate: "Product rate is required",
+      }));
+    }
+
+    if (!validate) return;
+    quantityRefs.current[index]?.focus();
+    const newProduct = {
+      id: productList.length + 1,
+      name: dialogValue.name,
+      unit: dialogValue.unit,
+      rate: Number(dialogValue.rate),
+    };
+    const updatedList = [...productList, newProduct];
+    dispatch(productUpdate(updatedList));
+    handleItemChange(index, "selectedCracker", newProduct.id);
+    quantityRefs.current[index]?.focus();
+    handleClose();
+  };
+
   const clearForm = () => {
-    localStorage.clear();
     onSubmit([], false);
     setClientName("");
     setCity("");
@@ -108,9 +225,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     const productDetails = items
       .filter((product) => product.selectedCracker !== "")
       .map((item) => {
-        const cracker = CrackersPriceList.find(
-          (c) => c.id === item.selectedCracker
-        );
+        const cracker = productList.find((c) => c.id === item.selectedCracker);
         return {
           id: cracker.id,
           name: cracker.name,
@@ -217,7 +332,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
         inputValue !== "" &&
         !isNaN(inputValue) &&
         inputValue > 0 &&
-        inputValue <= CrackersPriceList.length
+        inputValue <= productList.length
       ) {
         handleItemChange(index, "selectedCracker", Number(inputValue));
         quantityRefs.current[index]?.focus();
@@ -530,11 +645,11 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                 >
                   <Grid item xs={2}>
                     <Autocomplete
-                      options={CrackersPriceList}
+                      options={productList}
                       getOptionLabel={(option) => option.id.toString()}
                       value={
                         item.selectedCracker
-                          ? CrackersPriceList.find(
+                          ? productList.find(
                               (c) => c.id === item.selectedCracker
                             ) || null
                           : null
@@ -608,23 +723,80 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
 
                   <Grid item xs={3}>
                     <Autocomplete
-                      options={CrackersPriceList}
-                      getOptionLabel={(option) => option.name}
+                      options={productList}
+                      getOptionLabel={(option) => {
+                        if (typeof option === "string") {
+                          return option;
+                        }
+                        if (option.inputValue) {
+                          return option.inputValue;
+                        }
+                        return option.name;
+                      }}
                       value={
                         item.selectedCracker
-                          ? CrackersPriceList.find(
+                          ? productList.find(
                               (c) => c.id === item.selectedCracker
                             ) || null
                           : null
                       }
+                      selectOnFocus
+                      clearOnBlur
+                      handleHomeEndKeys
                       onChange={(event, newValue) => {
-                        handleItemChange(
-                          index,
-                          "selectedCracker",
-                          newValue ? newValue.id : ""
+                        if (typeof newValue === "string") {
+                          setTimeout(() => {
+                            toggleOpen(true);
+                            setDialogValue({
+                              name: newValue,
+                              unit: "",
+                              rate: "",
+                            });
+                            setDialogValueError((prevState) => ({
+                              ...prevState,
+                              name: "",
+                            }));
+                          });
+                        } else if (newValue && newValue.inputValue) {
+                          toggleOpen(true);
+                          setDialogValue({
+                            name: newValue.inputValue,
+                            unit: "",
+                            rate: "",
+                          });
+                          setDialogValueError((prevState) => ({
+                            ...prevState,
+                            name: "",
+                          }));
+                        } else {
+                          handleItemChange(
+                            index,
+                            "selectedCracker",
+                            newValue ? newValue.id : ""
+                          );
+                        }
+                      }}
+                      renderOption={(props, option) => {
+                        const isCustomOption = !!option.inputValue;
+
+                        return (
+                          <StyledOption {...props} primary={isCustomOption}>
+                            {option.name}
+                          </StyledOption>
                         );
                       }}
                       onKeyDown={(e) => handleEnterSelect(e, index)}
+                      filterOptions={(options, params) => {
+                        const filtered = filter(options, params);
+                        if (params.inputValue !== "") {
+                          filtered.push({
+                            inputValue: params.inputValue,
+                            name: `Add "${params.inputValue}"`,
+                          });
+                        }
+
+                        return filtered;
+                      }}
                       renderInput={(params) => (
                         <>
                           <TextField
@@ -664,6 +836,161 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                                 "This field is required."}
                             </Typography>
                           )}
+                          <Dialog open={open} onClose={handleClose}>
+                            <form>
+                              <DialogTitle>Add a new product</DialogTitle>
+                              <DialogContent>
+                                <Grid container spacing={2}>
+                                  <Grid item xs={4}>
+                                    <InputLabel
+                                      sx={{ ...inputFieldStyle.labelStyle }}
+                                    >
+                                      Product name {<span>*</span>}
+                                    </InputLabel>
+                                    <TextField
+                                      autoFocus
+                                      placeholder="Enter product name"
+                                      margin="dense"
+                                      id="name"
+                                      value={dialogValue?.name}
+                                      name="name"
+                                      onChange={handleChangeNewProduct}
+                                      error={!!dialogValueError.name}
+                                      fullWidth
+                                      sx={{
+                                        ...inputFieldStyle.textFieldSx,
+                                        "& input::placeholder": {
+                                          fontSize: "12px",
+                                        },
+                                      }}
+                                    />
+                                    {dialogValueError.name && (
+                                      <Typography
+                                        color="error"
+                                        sx={{ fontSize: "12px" }}
+                                      >
+                                        {dialogValueError.name}
+                                      </Typography>
+                                    )}
+                                  </Grid>
+                                  <Grid item xs={4}>
+                                    <InputLabel
+                                      sx={{ ...inputFieldStyle.labelStyle }}
+                                    >
+                                      Product unit <span>*</span>
+                                    </InputLabel>
+                                    <Select
+                                      labelId="unit"
+                                      margin="dense"
+                                      id="name"
+                                      name="unit"
+                                      value={dialogValue.unit || ""}
+                                      onChange={handleChangeNewProduct}
+                                      error={!!dialogValueError.unit}
+                                      fullWidth
+                                      displayEmpty
+                                      sx={{
+                                        ...inputFieldStyle.textFieldSx,
+                                        mt: 1,
+                                        "& .MuiSelect-select": {
+                                          color:
+                                            dialogValue.unit === ""
+                                              ? "#949494"
+                                              : "inherit",
+                                          fontSize:
+                                            dialogValue.unit === ""
+                                              ? "12px"
+                                              : "inherit",
+                                        },
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                          borderColor: "#808080",
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline":
+                                          {
+                                            borderColor:
+                                              theme.palette.primary.main,
+                                          },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                          {
+                                            borderColor:
+                                              theme.palette.primary.main,
+                                          },
+                                        "&.Mui-error .MuiOutlinedInput-notchedOutline":
+                                          {
+                                            borderColor: "#FF0000",
+                                          },
+                                      }}
+                                    >
+                                      <MenuItem
+                                        value=""
+                                        disabled
+                                        sx={{ color: "gray", fontSize: "12px" }}
+                                      >
+                                        Enter Product unit
+                                      </MenuItem>
+                                      <MenuItem value="1Box">1Box</MenuItem>
+                                      <MenuItem value="1Pkt">1Pkt</MenuItem>
+                                      <MenuItem value="1Pcs">1Pcs</MenuItem>
+                                    </Select>
+
+                                    {dialogValueError.unit && (
+                                      <Typography
+                                        color="error"
+                                        sx={{ fontSize: "12px", mt: "4px" }}
+                                      >
+                                        {dialogValueError.unit}
+                                      </Typography>
+                                    )}
+                                  </Grid>
+                                  <Grid item xs={4}>
+                                    <InputLabel
+                                      sx={{ ...inputFieldStyle.labelStyle }}
+                                    >
+                                      Product rate {<span>*</span>}
+                                    </InputLabel>
+                                    <TextField
+                                      placeholder="Enter product rate"
+                                      type="number"
+                                      margin="dense"
+                                      id="name"
+                                      name="rate"
+                                      value={dialogValue.rate}
+                                      onChange={handleChangeNewProduct}
+                                      error={!!dialogValueError.rate}
+                                      fullWidth
+                                      sx={{
+                                        ...inputFieldStyle.textFieldSx,
+                                        "& input::placeholder": {
+                                          fontSize: "12px",
+                                        },
+                                        '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
+                                          {
+                                            "-webkit-appearance": "none",
+                                            margin: 0,
+                                          },
+                                      }}
+                                    />
+                                    {dialogValueError.rate && (
+                                      <Typography
+                                        color="error"
+                                        sx={{ fontSize: "12px" }}
+                                      >
+                                        {dialogValueError.rate}
+                                      </Typography>
+                                    )}
+                                  </Grid>
+                                </Grid>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={handleClose}>Cancel</Button>
+                                <Button
+                                  onClick={() => handleProductListSubmit(index)}
+                                >
+                                  Add
+                                </Button>
+                              </DialogActions>
+                            </form>
+                          </Dialog>
                         </>
                       )}
                       fullWidth
@@ -733,7 +1060,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                       label="Rate"
                       value={
                         item.selectedCracker
-                          ? CrackersPriceList.find(
+                          ? productList.find(
                               (c) => c.id === item.selectedCracker
                             )?.rate || ""
                           : 0
@@ -753,7 +1080,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                       label="Total"
                       value={
                         item.selectedCracker
-                          ? CrackersPriceList.find(
+                          ? productList.find(
                               (c) => c.id === item.selectedCracker
                             )?.rate * item.quantity || ""
                           : 0
