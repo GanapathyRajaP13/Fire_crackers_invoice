@@ -123,7 +123,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
     const newErrors = {};
     if (mobileNumbers.length < 1)
       newErrors.mobileNumbers =
-        "Press Enter after entering your mobile number.";
+        "Press Enter/AddIcon after entering your mobile no.";
     if (!clientName) newErrors.clientName = "Client Name is required";
     if (!city) newErrors.city = "City is required";
     if (!mobileNo.match(/^\d{10}$/))
@@ -403,7 +403,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
         borderRadius: "8px",
         bgcolor: "#eee",
         p: 1,
-        boxShadow: "10px 10px 5px #cfcfcf",
+        boxShadow: "5px 5px 5px #e9e7e7",
       }}
     >
       <Box
@@ -418,7 +418,7 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
           borderRadius: "4px",
         }}
       >
-        <Typography variant="h4" sx={{ textAlign: "center" }}>
+        <Typography variant="h5" sx={{ textAlign: "center" }}>
           Sivakasi Crackers Invoice Form
         </Typography>
       </Box>
@@ -517,6 +517,9 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                 sx={{
                   width: "100%",
                   ...inputFieldStyle.textFieldSx,
+                  "& .MuiSvgIcon-root": {
+                    color: "#1976d2",
+                  },
                 }}
               />
               {errors.estimateDate && (
@@ -599,7 +602,9 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                       <IconButton
                         sx={{
                           padding: 0,
-                          margin: 0,
+                           marginRight: "-10px !important",
+                          color: "#1976d2",
+                      
                         }}
                         onClick={handleAddClick}
                       >
@@ -637,9 +642,15 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                     key={index}
                     label={number}
                     onDelete={() => handleRemoveMobileNumber(index)}
-                    color="gray"
+                    color="#ADB4B9"
                     variant="outlined"
-                    sx={{ marginBottom: "10px", marginRight: "10px" }}
+                    sx={{
+                      marginTop: "4px",
+                      marginRight: "10px",
+                      "& .MuiChip-deleteIcon": {
+                        color: "#1976d2",
+                      },
+                    }}
                   />
                 ))}
               </Box>
@@ -720,6 +731,9 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                                 fontSize: "0.875rem",
                                 height: "40px",
                               },
+                              "& .MuiSvgIcon-root":{
+                                color:"#1976d2"
+                              }
                             }}
                           />
                         </>
@@ -855,6 +869,9 @@ const InvoiceForm = ({ onSubmit, invoiceData }) => {
                                 fontSize: "0.875rem",
                                 height: "40px",
                               },
+                              "& .MuiSvgIcon-root":{
+                                color:"#1976d2"
+                              }
                             }}
                           />
 
